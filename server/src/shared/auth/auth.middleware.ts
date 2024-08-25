@@ -7,7 +7,7 @@ import {
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../../config';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/modules/user/user.service';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {

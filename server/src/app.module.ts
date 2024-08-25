@@ -6,31 +6,29 @@ import {
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
-import { MikroORM, PostgreSqlDriver } from '@mikro-orm/postgresql';
-import { UserModule } from './user/user.module';
-import { UserController } from './user/user.controller';
-import { ProductModule } from './product/product.module';
+import { MikroORM } from '@mikro-orm/postgresql';
+import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.module';
+
+import MikroOrmConfig from './mikro-orm.config';
+import { ProductCategoryModule } from './modules/product-category/product-category.module';
+import { StoreModule } from './modules/store/store.module';
 
 @Module({
   imports: [
-    MikroOrmModule.forRoot({
-      entities: ['dist/**/*.entity.js'],
-      entitiesTs: ['src/**/*.entity.ts'],
-      dbName: 'acuem',
-      driver: PostgreSqlDriver,
-      password: 'admin',
-      user: 'postgres',
-    }),
+    MikroOrmModule.forRoot(MikroOrmConfig),
     UserModule,
     ProductModule,
+    ProductCategoryModule,
+    StoreModule,
   ],
-  controllers: [AppController, UserController],
+  controllers: [AppController],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(private readonly orm: MikroORM) {}
 
   async onModuleInit(): Promise<void> {
-    // await this.orm.getMigrator().up();
+    await this.orm.getMigrator().up();
   }
 
   configure(consumer: MiddlewareConsumer) {

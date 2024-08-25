@@ -1,4 +1,4 @@
 export interface BaseDTO<Entity, DTO> {
-  to(existing?: Entity): Entity;
+  to(dto: DTO, existing?: Entity): Entity | Promise<Entity>;
   from(entity: Entity): DTO;
 }
