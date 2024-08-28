@@ -85,8 +85,8 @@ export function CrudController<
       name: 'id',
       type: swagger.idType,
     })
-    async delete(@Param('id') id: ID): Promise<void> {
-      return this.service.delete(id);
+    async delete(@Param('id') id: ID, @CurrentUser() user: any): Promise<void> {
+      return this.service.delete(id, user);
     }
   }
 

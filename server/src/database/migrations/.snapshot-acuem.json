@@ -351,12 +351,14 @@
         },
         "price": {
           "name": "price",
-          "type": "int",
+          "type": "numeric(10,0)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "integer"
+          "precision": 10,
+          "scale": 0,
+          "mappedType": "decimal"
         },
         "quantity": {
           "name": "quantity",
@@ -367,6 +369,16 @@
           "nullable": false,
           "default": "0",
           "mappedType": "integer"
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "true",
+          "mappedType": "boolean"
         },
         "category_id": {
           "name": "category_id",
@@ -706,13 +718,13 @@
         },
         "date": {
           "name": "date",
-          "type": "timestamptz",
+          "type": "date",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
+          "length": 0,
+          "mappedType": "date"
         },
         "status": {
           "name": "status",
@@ -734,13 +746,13 @@
         },
         "finished_at": {
           "name": "finished_at",
-          "type": "timestamptz",
+          "type": "date",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
+          "length": 0,
+          "mappedType": "date"
         },
         "cancel_cause": {
           "name": "cancel_cause",

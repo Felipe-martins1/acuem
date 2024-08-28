@@ -50,8 +50,6 @@ export class StoreService extends CrudService<number, Store> {
       },
     });
 
-    console.log(purchasesDay, purchasesMonth);
-
     return {
       purchasesDay,
       purchasesMonth,

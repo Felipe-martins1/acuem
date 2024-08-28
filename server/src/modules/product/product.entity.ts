@@ -31,6 +31,9 @@ export class Product {
   @Property({ default: 0 })
   quantity!: number;
 
+  @Property({ default: true })
+  active!: boolean;
+
   @ManyToOne(() => ProductCategory, { ref: true })
   category!: Rel<ProductCategory>;
 

@@ -24,6 +24,7 @@ import { CategorySelect } from './components/CategorySelect';
 import { ProductEditableQuantity } from './components/ProductEditableQuantity';
 import { Product } from '@/types/api';
 import { ProductForm } from './components/ProductForm';
+import { ProductActive } from './components/ProductActive';
 
 export default function Home() {
   const [productFormStatus, setProductFormStatus] = useState<{
@@ -86,6 +87,7 @@ export default function Home() {
           <TableColumn>Nome</TableColumn>
           <TableColumn>Qtd. Disp</TableColumn>
           <TableColumn>Valor</TableColumn>
+          <TableColumn>Ativo</TableColumn>
           <TableColumn>Ações</TableColumn>
         </TableHeader>
         <TableBody>
@@ -98,23 +100,28 @@ export default function Home() {
               </TableCell>
               <TableCell>R$ {product.price}</TableCell>
               <TableCell>
-                <Tooltip
-                  color="foreground"
-                  content="Editar"
-                  placement="top-start"
-                >
-                  <span
-                    className="text-lg cursor-pointer active:opacity-50"
-                    onClick={() =>
-                      setProductFormStatus({
-                        open: true,
-                        productId: product.id,
-                      })
-                    }
+                <ProductActive product={product} />
+              </TableCell>
+              <TableCell>
+                <div>
+                  <Tooltip
+                    color="foreground"
+                    content="Editar"
+                    placement="top-start"
                   >
-                    <EditIcon />
-                  </span>
-                </Tooltip>
+                    <span
+                      className="text-lg cursor-pointer active:opacity-50"
+                      onClick={() =>
+                        setProductFormStatus({
+                          open: true,
+                          productId: product.id,
+                        })
+                      }
+                    >
+                      <EditIcon />
+                    </span>
+                  </Tooltip>
+                </div>
               </TableCell>
             </TableRow>
           ))}

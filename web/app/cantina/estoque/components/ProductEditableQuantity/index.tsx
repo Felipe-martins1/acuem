@@ -10,7 +10,7 @@ export const ProductEditableQuantity = ({ product }: { product: Product }) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
-      if (freshQuantity === product.quantity || isPending)
+      if (isPending)
         return Promise.resolve({ ...product, quantity: freshQuantity });
 
       return ProductService.update(product.id, {

@@ -38,7 +38,11 @@ export abstract class CrudService<
     return entity;
   }
 
-  async delete(id: ID): Promise<void> {
+  async delete(id: ID, auth: any): Promise<void> {
+    const entity = await this.findByIdOrThrow(id);
+
+    this.beforeDelete(entity, auth);
+
     await this.repository.nativeDelete({ id } as any);
   }
 
@@ -64,4 +68,8 @@ export abstract class CrudService<
 
   abstract beforeCreate(entity: T, auth: any): Promise<void> | void;
   abstract beforeUpdate(entity: T, auth: any): Promise<void> | void;
+
+  beforeDelete(_entity: T, _auth: any): Promise<void> | void {
+    return;
+  }
 }

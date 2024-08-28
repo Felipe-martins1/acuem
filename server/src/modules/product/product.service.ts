@@ -16,13 +16,6 @@ export class ProductService extends CrudService<
     super(repository, em);
   }
 
-  beforeCreate(entity: Product, auth: any): Promise<void> | void {
-    entity.store = rel(Store, auth.storeId);
-  }
-  beforeUpdate(_entity: Product, _auth: any): Promise<void> | void {
-    return;
-  }
-
   findAllByStoreIdAndIdIn(storeId: number, ids: number[]) {
     return this.repository.findAll({
       where: {
@@ -30,6 +23,16 @@ export class ProductService extends CrudService<
         ...ProductService.FilterByIdsIn(ids),
       },
     });
+  }
+
+  beforeCreate(entity: Product, auth: any): Promise<void> | void {
+    entity.store = rel(Store, auth.storeId);
+  }
+  beforeUpdate(_entity: Product, _auth: any): Promise<void> | void {
+    return;
+  }
+  beforeDelete(_entity: Product, _auth: any): Promise<void> | void {
+    throw new Error('Method not implemented');
   }
 
   static FilterByStoreId(storeId: number): FindAllWhere<Product> {

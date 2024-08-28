@@ -12,7 +12,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ProductService from '@/service/product.service';
 
-type FormState = Partial<Product>;
+type FormState = Partial<Omit<Product, 'active'>>;
 
 const validateForm = (
   data: FormState,
@@ -70,7 +70,7 @@ export const ProductForm = ({
   const [form, setForm] = useState<FormState>(buildDefaultValues(product));
   const errors = useMemo(() => validateForm(form), [form]);
 
-  const isValidForm = (data: FormState): data is Product => {
+  const isValidForm = (data: FormState): data is Omit<Product, 'active'> => {
     return !Object.values(errors).some(v => !!v);
   };
 
@@ -79,9 +79,14 @@ export const ProductForm = ({
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
       if (isValidForm(form)) {
+        const formWithActive = {
+          ...form,
+          active: product ? product.active : true,
+        };
+
         return product?.id
-          ? ProductService.update(product.id, form)
-          : ProductService.create(form);
+          ? ProductService.update(product.id, formWithActive)
+          : ProductService.create(formWithActive);
       } else {
         throw new Error('Invalid Form');
       }

@@ -23,6 +23,9 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
   @ApiProperty()
   categoryId: number;
 
+  @ApiProperty({ default: true })
+  active: boolean;
+
   to(dto: ProductDTO, existing?: Product): Product {
     const product = existing || new Product();
 
@@ -30,6 +33,7 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
     product.description = dto.description;
     product.price = dto.price;
     product.quantity = dto.quantity;
+    product.active = dto.active;
 
     product.category = rel(ProductCategory, dto.categoryId);
 
@@ -43,6 +47,7 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
     dto.price = entity.price;
     dto.quantity = entity.quantity;
     dto.categoryId = entity.category.id;
+    dto.active = entity.active;
 
     return dto;
   }
