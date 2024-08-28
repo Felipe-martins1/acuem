@@ -25,7 +25,7 @@ export class Product {
   @Property()
   description!: string;
 
-  @Property()
+  @Property({ type: 'decimal' })
   price!: number;
 
   @Property({ default: 0 })
