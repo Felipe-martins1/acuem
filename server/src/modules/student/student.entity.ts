@@ -6,6 +6,6 @@ export class Student extends User {
   @ManyToOne()
   universityCourse!: UniversityCourse;
 
-  @Property()
+  @Property({ default: 0 })
   points!: number;
 }

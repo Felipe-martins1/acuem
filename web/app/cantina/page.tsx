@@ -1,6 +1,9 @@
 'use client';
 
+import { Loader } from '@/components/loader';
+import StoreService from '@/service/store.service';
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
+import { useQuery } from '@tanstack/react-query';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 const cards = [
@@ -51,8 +54,18 @@ const pedidosPorPeriodo = [
 ];
 
 export default function Home() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['dashboard'],
+    queryFn: () => {
+      return StoreService.findDashboard(1);
+    },
+    refetchInterval: Infinity,
+    retry: false,
+  });
+
   return (
     <section className="pb-6">
+      <Loader loading={isLoading} />;
       <div className="mb-8">
         <p className="text-gray-500 mb-4">Monitoramento de pedidos</p>
         <div className="flex items-stretch justify-between gap-4 flex-wrap">

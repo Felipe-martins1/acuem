@@ -1,4 +1,8 @@
-import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
+import {
+  EntityManager,
+  EntityRepository,
+  FindAllOptions,
+} from '@mikro-orm/postgresql';
 import { CrudEntity } from '../interface/crud-entity.interface';
 import { validate } from 'class-validator';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
@@ -13,8 +17,8 @@ export abstract class CrudService<
     protected readonly em: EntityManager,
   ) {}
 
-  async create(entity: T): Promise<T> {
-    await this.beforeCreate(entity);
+  async create(entity: T, auth: any): Promise<T> {
+    await this.beforeCreate(entity, auth);
     const errors = await validate(entity);
 
     if (errors.length > 0) {
@@ -28,8 +32,8 @@ export abstract class CrudService<
     }
   }
 
-  async update(entity: T): Promise<T> {
-    await this.beforeUpdate(entity);
+  async update(entity: T, auth: any): Promise<T> {
+    await this.beforeUpdate(entity, auth);
     await this.em.flush();
     return entity;
   }
@@ -54,10 +58,10 @@ export abstract class CrudService<
     return entity;
   }
 
-  async findAll(): Promise<T[]> {
-    return this.repository.findAll();
+  async findAll(filters?: FindAllOptions<T>): Promise<T[]> {
+    return this.repository.findAll(filters);
   }
 
-  abstract beforeCreate(entity: T): Promise<void> | void;
-  abstract beforeUpdate(entity: T): Promise<void> | void;
+  abstract beforeCreate(entity: T, auth: any): Promise<void> | void;
+  abstract beforeUpdate(entity: T, auth: any): Promise<void> | void;
 }

@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { LoginUserDto } from './dto';
 import { User } from './user.entity';
@@ -7,6 +6,7 @@ import { UserRepository } from './user.repository';
 import { CrudService } from 'src/shared/service/crud.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { SECRET } from 'src/config';
+import { hashPassword } from '../../shared/utils/password';
 
 @Injectable()
 export class UserService extends CrudService<string, User, UserRepository> {
@@ -32,14 +32,11 @@ export class UserService extends CrudService<string, User, UserRepository> {
   }
 
   async findByLogin(loginUserDto: LoginUserDto): Promise<User | null> {
-    const findOneOptions = {
+    const user = await this.repository.findOne({
       username: loginUserDto.email,
-      password: crypto
-        .createHmac('sha256', loginUserDto.password)
-        .digest('hex'),
-    };
+    });
 
-    return this.repository.findOne(findOneOptions);
+    if (user.password === hashPassword(loginUserDto.password)) return user;
   }
 
   async findByEmail(email: string): Promise<User> {

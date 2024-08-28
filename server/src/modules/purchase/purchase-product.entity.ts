@@ -7,7 +7,7 @@ export class PurchaseProduct {
   @PrimaryKey()
   id!: number;
 
-  @ManyToOne()
+  @ManyToOne(() => Purchase)
   purchase!: Purchase;
 
   @ManyToOne()

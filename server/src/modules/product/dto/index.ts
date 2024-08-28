@@ -2,7 +2,6 @@ import { BaseDTO } from 'src/shared/interface/base.dto';
 import { Product } from '../product.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProductCategory } from 'src/modules/product-category/product-category.entity';
-import { Store } from 'src/modules/store/store.entity';
 import { rel } from '@mikro-orm/core';
 
 export class ProductDTO implements BaseDTO<Product, ProductDTO> {
@@ -24,9 +23,6 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
   @ApiProperty()
   categoryId: number;
 
-  @ApiProperty()
-  storeId: number;
-
   to(dto: ProductDTO, existing?: Product): Product {
     const product = existing || new Product();
 
@@ -36,7 +32,6 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
     product.quantity = dto.quantity;
 
     product.category = rel(ProductCategory, dto.categoryId);
-    product.store = rel(Store, dto.storeId);
 
     return product;
   }
@@ -47,7 +42,6 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
     dto.description = entity.description;
     dto.price = entity.price;
     dto.quantity = entity.quantity;
-    dto.storeId = entity.store.id;
     dto.categoryId = entity.category.id;
 
     return dto;

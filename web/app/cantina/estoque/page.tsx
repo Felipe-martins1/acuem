@@ -1,15 +1,8 @@
 'use client';
 
+import CategoryService from '@/service/category.service';
 import {
-  Autocomplete,
-  AutocompleteItem,
   Button,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Table,
   TableHeader,
   TableColumn,
@@ -17,86 +10,73 @@ import {
   TableRow,
   TableCell,
   Tooltip,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from '@nextui-org/react';
+import { useQuery } from '@tanstack/react-query';
 import { EditIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
+import ProductService from '@/service/product.service';
+import { CategorySelect } from './components/CategorySelect';
+import { ProductEditableQuantity } from './components/ProductEditableQuantity';
+import { Product } from '@/types/api';
+import { ProductForm } from './components/ProductForm';
 
-export const animals = [
-  {
-    label: 'Cat',
-    value: 'cat',
-    description: 'The second most popular pet in the world',
-  },
-  {
-    label: 'Dog',
-    value: 'dog',
-    description: 'The most popular pet in the world',
-  },
-  {
-    label: 'Elephant',
-    value: 'elephant',
-    description: 'The largest land animal',
-  },
-  { label: 'Lion', value: 'lion', description: 'The king of the jungle' },
-  { label: 'Tiger', value: 'tiger', description: 'The largest cat species' },
-  {
-    label: 'Giraffe',
-    value: 'giraffe',
-    description: 'The tallest land animal',
-  },
-];
 export default function Home() {
-  const [isOpenCatModal, setIsOpenCatModal] = useState(false);
+  const [productFormStatus, setProductFormStatus] = useState<{
+    open: boolean;
+    productId: number | null;
+  }>({
+    open: false,
+    productId: null,
+  });
+  const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
+
+  const { data: products = [], isLoading: isLoadingProducts } = useQuery({
+    queryKey: ['products', categoryId],
+    queryFn: () => ProductService.findAll(categoryId),
+  });
+
+  const product =
+    productFormStatus.productId &&
+    products.find(p => p.id === productFormStatus.productId);
 
   return (
     <section className="">
-      <Modal isOpen={isOpenCatModal} onOpenChange={setIsOpenCatModal}>
+      <Modal
+        isOpen={productFormStatus.open}
+        onOpenChange={() =>
+          setProductFormStatus({
+            open: false,
+            productId: null,
+          })
+        }
+      >
         <ModalContent>
           {onClose => (
-            <form onSubmit={e => e.preventDefault()}>
-              <ModalHeader>Criar Categoria</ModalHeader>
-              <ModalBody>
-                <Input placeholder="Nome" />
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={onClose}>Cancelar</Button>
-                <Button color="primary" type="submit">
-                  Criar
-                </Button>
-              </ModalFooter>
-            </form>
+            <ProductForm onClose={onClose} product={product || undefined} />
           )}
         </ModalContent>
       </Modal>
+
       <div className="flex justify-between">
-        <div className="flex gap-4">
-          <Autocomplete
-            label="Selecione uma Categoria"
-            className="max-w-xs"
-            size="sm"
-            listboxProps={{
-              emptyContent: (
-                <>
-                  <Button className="w-full">Criar Categoria: XYZ</Button>
-                </>
-              ),
-            }}
-          >
-            {animals.map(animal => (
-              <AutocompleteItem key={animal.value} value={animal.value}>
-                {animal.label}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
-          <Button
-            size="lg"
-            color="primary"
-            onClick={() => setIsOpenCatModal(true)}
-          >
-            Criar Categoria
-          </Button>
-        </div>
-        <Button size="lg" color="primary">
+        <CategorySelect
+          categoryId={categoryId}
+          onCategoryIdChange={setCategoryId}
+          isLoading={isLoadingProducts}
+        />
+        <Button
+          color="primary"
+          onClick={() =>
+            setProductFormStatus({
+              open: true,
+              productId: null,
+            })
+          }
+        >
           Criar Produto
         </Button>
       </div>
@@ -106,38 +86,38 @@ export default function Home() {
           <TableColumn>Nome</TableColumn>
           <TableColumn>Qtd. Disp</TableColumn>
           <TableColumn>Valor</TableColumn>
-          <TableColumn>Qtd. Vendida</TableColumn>
           <TableColumn>Ações</TableColumn>
         </TableHeader>
         <TableBody>
-          <TableRow key="1">
-            <TableCell>1</TableCell>
-            <TableCell>Batata Frita</TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Button size="sm" isIconOnly variant="bordered">
-                  <MinusIcon />
-                </Button>
-                1
-                <Button size="sm" isIconOnly variant="bordered">
-                  <PlusIcon />
-                </Button>
-              </div>
-            </TableCell>
-            <TableCell>R$ 100</TableCell>
-            <TableCell>200</TableCell>
-            <TableCell>
-              <Tooltip
-                color="foreground"
-                content="Editar"
-                placement="top-start"
-              >
-                <span className="text-lg cursor-pointer active:opacity-50">
-                  <EditIcon />
-                </span>
-              </Tooltip>
-            </TableCell>
-          </TableRow>
+          {products.map(product => (
+            <TableRow key={product.id}>
+              <TableCell>{product.id}</TableCell>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>
+                <ProductEditableQuantity product={product} />
+              </TableCell>
+              <TableCell>R$ {product.price}</TableCell>
+              <TableCell>
+                <Tooltip
+                  color="foreground"
+                  content="Editar"
+                  placement="top-start"
+                >
+                  <span
+                    className="text-lg cursor-pointer active:opacity-50"
+                    onClick={() =>
+                      setProductFormStatus({
+                        open: true,
+                        productId: product.id,
+                      })
+                    }
+                  >
+                    <EditIcon />
+                  </span>
+                </Tooltip>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </section>

@@ -5,7 +5,6 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
-  Opt,
   OptionalProps,
   PrimaryKey,
   Property,
@@ -34,13 +33,16 @@ export class Purchase {
   @PrimaryKey()
   id!: number;
 
-  @Property()
-  date: Date & Opt = new Date();
+  @Property({
+    type: 'date',
+    onCreate: () => new Date(),
+  })
+  date = new Date();
 
   @Enum({ items: () => PurchaseStatus, default: PurchaseStatus.PENDING })
   status: PurchaseStatus;
 
-  @Property({ nullable: true })
+  @Property({ type: 'date', nullable: true })
   finishedAt?: Date;
 
   @Property({ nullable: true })
