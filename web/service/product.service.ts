@@ -1,7 +1,10 @@
 import { Product } from '@/types/api';
 import BaseService from './baseService';
+import { api } from '@/lib/axios';
 
-const base = BaseService<Product>('products');
+const resource = 'products';
+
+const base = BaseService<Product>(resource);
 
 const ProductService = {
   ...base,
@@ -11,6 +14,8 @@ const ProductService = {
         categoryId: catId,
       },
     }),
+  findAllByStoreId: (storeId: number) =>
+    api.get<Product[]>(`${resource}/store/${storeId}`).then(res => res.data),
 };
 
 export default ProductService;

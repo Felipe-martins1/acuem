@@ -11,4 +11,15 @@ export type Product = {
   quantity: number;
   categoryId: number;
   active: boolean;
+  storeId: number;
+};
+
+export type Cantina = {
+  id: number;
+
+  name: string;
+
+  cnpj: string;
+
+  universityId: number;
 };

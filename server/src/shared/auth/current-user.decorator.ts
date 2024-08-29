@@ -8,3 +8,12 @@ export const CurrentUser = createParamDecorator(
     };
   },
 );
+
+export const CurrentStudent = createParamDecorator(
+  (_data, _ctx: ExecutionContext) => {
+    return {
+      storeId: 1,
+      studentId: 1,
+    };
+  },
+);

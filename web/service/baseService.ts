@@ -11,7 +11,7 @@ const BaseService = <
   findAll: (config?: AxiosRequestConfig) => {
     return api.get<T[]>(resource, config).then(data => data.data || []);
   },
-  create: (data: Omit<T, 'id', 'active'>) => {
+  create: (data: Omit<T, 'id'>) => {
     return api.post<T>(resource, data).then(data => data.data);
   },
   update: async (id: T['id'], data: Partial<T>) => {

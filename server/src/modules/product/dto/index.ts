@@ -23,6 +23,9 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
   @ApiProperty()
   categoryId: number;
 
+  @ApiProperty()
+  storeId: number;
+
   @ApiProperty({ default: true })
   active: boolean;
 
@@ -48,6 +51,7 @@ export class ProductDTO implements BaseDTO<Product, ProductDTO> {
     dto.quantity = entity.quantity;
     dto.categoryId = entity.category.id;
     dto.active = entity.active;
+    dto.storeId = entity.store.id;
 
     return dto;
   }

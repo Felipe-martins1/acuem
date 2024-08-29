@@ -13,17 +13,17 @@ import { useAuth } from '@/context/AuthContext';
 const navItems = [
   {
     title: 'Início',
-    href: '/cantina',
+    href: '/adm',
     icon: HomeIcon,
   },
   {
     title: 'Pedidos',
-    href: '/cantina/pedidos',
+    href: '/adm/pedidos',
     icon: ScrollText,
   },
   {
     title: 'Estoque',
-    href: '/cantina/estoque',
+    href: '/adm/estoque',
     icon: Archive,
   },
 ];
