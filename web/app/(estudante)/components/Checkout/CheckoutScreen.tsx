@@ -3,30 +3,25 @@
 import { useCart } from '@/context/CartContext';
 import { Product } from '@/types/api';
 import { formatCurrency } from '@/utils/format';
-import { useCheckout } from './hooks/useCheckout';
+import { useCheckout } from '../../cantina/[id]/hooks/useCheckout';
 import { Button } from '@nextui-org/button';
 import { MinusIcon, PlusIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { CheckoutDrawer } from './CheckoutDrawer';
 
 type Props = {
-  products: Product[];
+  onClose: () => void;
 };
 
-export const CheckoutScreen = ({ products }: Props) => {
-  const { itens, operations } = useCart();
-  const [_, setCheckout] = useCheckout();
+export const CheckoutScreen = ({ onClose }: Props) => {
+  const [isFinish, setIsFinish] = useState(false);
+  const { operations, checkoutProducts } = useCart();
 
-  const checkoutProducts = products.filter(
-    product => operations.get(product.id) > 0,
-  );
-
-  useEffect(() => {
-    if (checkoutProducts.length === 0) setCheckout(false);
-  }, [checkoutProducts]);
+  const totalValue = operations.calcTotalValue(checkoutProducts);
 
   return (
     <div className="min-h-full relative flex flex-col justify-between">
-      <div className="flex-1">
+      <div className="flex-1 space-y-4">
         {checkoutProducts.map(cProduct => (
           <div
             className="p-2 bg-background rounded-lg flex gap-1 items-stretch justify-between min-h-[100px] max-h-[100px]"
@@ -49,7 +44,11 @@ export const CheckoutScreen = ({ products }: Props) => {
                   size="sm"
                   color="primary"
                   className="w-6 h-6"
-                  onClick={() => operations.remove(cProduct.id)}
+                  onClick={() => {
+                    const restOne = operations.get(cProduct.id) === 1;
+                    operations.remove(cProduct.id);
+                    if (restOne) onClose();
+                  }}
                 >
                   <MinusIcon size={14} />
                 </Button>
@@ -68,22 +67,28 @@ export const CheckoutScreen = ({ products }: Props) => {
           </div>
         ))}
 
-        <p
-          onClick={() => setCheckout(false)}
-          className="text-primary text-center mt-6"
-        >
+        <p onClick={() => onClose()} className="text-primary text-center mt-6">
           Adicionar mais itens
         </p>
       </div>
 
-      <div className="sticky bottom-0">
-        <span>
-          Total: {formatCurrency(operations.calcTotalValue(products))}
-        </span>
-        <Button className="w-full" color="primary">
+      <div className="sticky bottom-0 bg-slate-100">
+        <span>Total: {formatCurrency(totalValue)}</span>
+        <Button
+          className="w-full"
+          color="primary"
+          onClick={() => setIsFinish(true)}
+        >
           FINALIZAR
         </Button>
       </div>
+
+      <CheckoutDrawer
+        checkoutProducts={checkoutProducts}
+        total={totalValue}
+        open={isFinish}
+        onOpenChange={setIsFinish}
+      />
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import { api } from '@/lib/axios';
+import BaseService from './baseService';
+import { Cantina } from '@/types/api';
 
 const resource = 'stores';
 
@@ -11,7 +13,10 @@ const findDashboard = (storeId: number) => {
     .then(value => value.data);
 };
 
+const base = BaseService<Cantina>(resource);
+
 const StoreService = {
+  ...base,
   findDashboard,
 };
 

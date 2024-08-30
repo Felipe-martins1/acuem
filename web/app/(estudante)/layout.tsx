@@ -20,7 +20,7 @@ import { cn } from '@/utils/cn';
 import Link from 'next/link';
 import { useQueryState } from 'nuqs';
 import { useRouter } from 'next/navigation';
-import { CartContextProvider } from '@/context/CartContext';
+import { CartContextProvider, useCart } from '@/context/CartContext';
 
 const navItems = [
   {
@@ -34,6 +34,7 @@ const navItems = [
   {
     href: '/carrinho',
     icon: ShoppingCart,
+    isCart: true,
   },
   {
     href: '/favoritos',
@@ -51,18 +52,20 @@ export default function EstudanteLayout({
   children: React.ReactNode;
 }) {
   const [search, setSearch] = useQueryState('s');
+  const [checkout] = useQueryState('checkout');
   const { authenticated } = useAuth();
   const isMobile = useIsMobile();
 
   const pathname = usePathname();
   const router = useRouter();
 
-  const isItemSelected = (href: string) => {
+  const isItemSelected = (href: string, isCart: boolean) => {
+    if (isCart && checkout) return true;
     return pathname === href;
   };
 
   const handleSearch = () => {
-    if (isItemSelected('/')) {
+    if (isItemSelected('/', false)) {
       return setSearch('');
     }
     router.push('/?s=');
@@ -105,10 +108,17 @@ export default function EstudanteLayout({
           {children}
         </main>
         <footer className="sticky bottom-0 mx-4 my-2 min-h-max bg-white p-2 rounded-md flex justify-evenly">
-          {navItems.map(({ href, icon: Icon }, index) => (
-            <Link href={href} key={index}>
+          {navItems.map(({ href, icon: Icon, isCart = false }, index) => (
+            <Link href={href} key={index} className="relative">
+              {isCart && (
+                <div className="text-xs absolute -right-3 -top-1 bg-slate-300 rounded-md w-5 h-5 flex items-center justify-center">
+                  <CartCount />
+                </div>
+              )}
               <Button isIconOnly className="bg-transparent">
-                <Icon className={cn(isItemSelected(href) && 'text-primary')} />
+                <Icon
+                  className={cn(isItemSelected(href, isCart) && 'text-primary')}
+                />
               </Button>
             </Link>
           ))}
@@ -117,3 +127,11 @@ export default function EstudanteLayout({
     </CartContextProvider>
   );
 }
+
+const CartCount = () => {
+  const { size } = useCart();
+
+  console.log(size);
+
+  return size;
+};

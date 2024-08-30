@@ -1,5 +1,12 @@
-const Perfil = () => {
-  return <h1>Perfil</h1>;
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { CheckoutScreen } from '../components/Checkout/CheckoutScreen';
+
+const Carrinho = () => {
+  const router = useRouter();
+
+  return <CheckoutScreen onClose={() => router.push('/')} />;
 };
 
-export default Perfil;
+export default Carrinho;

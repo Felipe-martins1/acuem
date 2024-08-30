@@ -15,11 +15,8 @@ export class StoreController extends CrudController<number, Store, StoreDTO>({
     idType: StoreDTO.prototype.id,
   },
 }) {
-  constructor(
-    private readonly service: StoreService,
-    private readonly purchaseRepo: PurchaseRepository,
-  ) {
-    super(service, purchaseRepo);
+  constructor(private readonly service: StoreService) {
+    super(service, new StoreDTO());
   }
 
   @Get(':id/dashboard')
