@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CrudController } from 'src/shared/controller/crud.controller';
 import { Store } from './store.entity';
 import { StoreDTO } from './dto';
@@ -8,6 +8,7 @@ import { CurrentEmployee, CurrentUser } from 'src/shared/auth';
 
 @Controller('stores')
 @ApiTags('stores')
+@ApiBearerAuth()
 export class StoreController extends CrudController<number, Store, StoreDTO>({
   swagger: {
     dtoType: StoreDTO,

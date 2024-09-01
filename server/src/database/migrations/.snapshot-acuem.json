@@ -164,6 +164,26 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
+        },
+        "address_city": {
+          "name": "address_city",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "address_state": {
+          "name": "address_state",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
         }
       },
       "name": "university",
@@ -223,6 +243,66 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "address_street": {
+          "name": "address_street",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "address_neighborhood": {
+          "name": "address_neighborhood",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "address_complement": {
+          "name": "address_complement",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "address_number": {
+          "name": "address_number",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "address_city": {
+          "name": "address_city",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "address_state": {
+          "name": "address_state",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
         }
       },
       "name": "store",
@@ -613,13 +693,13 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "varchar(255)",
+          "type": "timestamptz",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "length": 6,
+          "mappedType": "datetime"
         },
         "store_id": {
           "name": "store_id",
@@ -873,6 +953,17 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "current_price": {
+          "name": "current_price",
+          "type": "numeric(10,0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "precision": 10,
+          "scale": 0,
+          "mappedType": "decimal"
         }
       },
       "name": "purchase_product",

@@ -40,7 +40,7 @@ export class PurchaseProductDTO
     dto.productName = entity.product.name;
     dto.productId = entity.product.id;
     dto.quantity = entity.quantity;
-    dto.productPrice = entity.product.price;
+    dto.productPrice = entity.currentPrice;
 
     return dto;
   }

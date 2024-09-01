@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { BaseDTO } from 'src/shared/interface/base.dto';
 import { User } from '../user.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -31,12 +37,53 @@ export class UserDTO implements BaseDTO<User, UserDTO> {
   }
 }
 
-export class CreateUserDto {
+export class CreateStudentDto {
   @IsNotEmpty()
+  @IsEmail()
   readonly email!: string;
 
   @IsNotEmpty()
   readonly password!: string;
+
+  @IsNotEmpty()
+  @MinLength(3)
+  readonly name: string;
+
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(15)
+  readonly phone: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  readonly universityCourseId: number;
+}
+
+export class CreateEmployeeDto {
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty()
+  readonly email!: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly password!: string;
+
+  @IsNotEmpty()
+  @MinLength(3)
+  @ApiProperty()
+  readonly name: string;
+
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(15)
+  @ApiProperty()
+  readonly phone: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty()
+  readonly storeId: number;
 }
 
 export class LoginUserDto {

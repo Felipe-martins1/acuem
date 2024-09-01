@@ -6,7 +6,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PurchaseService } from './purchase.service';
 import { PurchaseDTO } from './dto';
 import { CurrentEmployee, CurrentStudent, CurrentUser } from 'src/shared/auth';
@@ -14,6 +14,7 @@ import { User } from '../user/user.entity';
 
 @Controller('purchases')
 @ApiTags('purchases')
+@ApiBearerAuth()
 export class PurchaseController {
   converter: PurchaseDTO = new PurchaseDTO();
   constructor(private readonly service: PurchaseService) {}

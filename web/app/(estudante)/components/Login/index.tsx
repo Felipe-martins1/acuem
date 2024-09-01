@@ -2,9 +2,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useLoginValidation } from '@/hooks/useLoginValidation';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
+import { Link } from '@nextui-org/link';
+import { parseAsBoolean, useQueryState } from 'nuqs';
 import { FormEvent, useState } from 'react';
+import { Register } from '../Register';
 
 export const Login = () => {
+  const [register, setRegister] = useQueryState('register', parseAsBoolean);
   const [notFoundError, setNotFoundError] = useState(false);
 
   const { login, isLoading } = useAuth();
@@ -27,6 +31,8 @@ export const Login = () => {
       });
     }
   };
+
+  if (register) return <Register />;
 
   return (
     <div className="bg-slate-100 min-h-screen p-4 flex flex-col">
@@ -75,11 +81,19 @@ export const Login = () => {
               isDisabled={isLoading}
             />
           </div>
+
           {notFoundError && (
             <p className="mt-2 text-sm text-danger">
               Usuário e senha inválidos, tente novamente.
             </p>
           )}
+
+          <p
+            className="mt-2 text-sm underline cursor-pointer"
+            onClick={() => setRegister(true)}
+          >
+            Não possui uma conta? Crie uma agora.
+          </p>
         </div>
         <Button
           size="lg"

@@ -3,12 +3,13 @@ import { CrudController } from 'src/shared/controller/crud.controller';
 import { Product } from './product.entity';
 import { ProductDTO } from './dto';
 import { ProductService } from './product.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentEmployee, CurrentStudent, CurrentUser } from 'src/shared/auth';
 import { User } from '../user/user.entity';
 
 @ApiTags('products')
 @Controller('products')
+@ApiBearerAuth()
 export class ProductController extends CrudController<
   number,
   Product,

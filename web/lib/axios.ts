@@ -3,6 +3,7 @@ import { User } from '@/types/api';
 import axios, { AxiosHeaders } from 'axios';
 
 import { jwtDecode } from 'jwt-decode';
+import toast from 'react-hot-toast';
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -27,6 +28,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   response => response,
   error => {
+    console.log(error);
     if (error.response?.status === 401) {
       const token = localStorage.getItem(TOKEN_KEY);
       if (token) {
@@ -39,7 +41,12 @@ api.interceptors.response.use(
           window.location.replace(window.location.origin + '/adm');
         }
       }
+    } else {
+      toast.error(
+        error.response?.data?.message || 'Um erro inesperado aconteceu.',
+      );
     }
+
     return Promise.reject(error);
   },
 );

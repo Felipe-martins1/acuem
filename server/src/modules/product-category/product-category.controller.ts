@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CrudController } from 'src/shared/controller/crud.controller';
 import { ProductCategory } from './product-category.entity';
 import { ProductCategoryDTO } from './dto';
@@ -9,6 +9,7 @@ import { User } from '../user/user.entity';
 
 @Controller('categories')
 @ApiTags('categories')
+@ApiBearerAuth()
 export class ProductCategoryController extends CrudController<
   number,
   ProductCategory,

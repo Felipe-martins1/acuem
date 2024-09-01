@@ -16,8 +16,15 @@ export class PurchaseProduct {
   @Property()
   quantity!: number;
 
+  @Property({
+    type: 'decimal',
+    onCreate: (entity: PurchaseProduct) => entity.product.price,
+    hidden: true,
+  })
+  currentPrice!: number;
+
   @Property({ persist: false })
   get total() {
-    return this.product.price * this.quantity;
+    return this.currentPrice * this.quantity;
   }
 }

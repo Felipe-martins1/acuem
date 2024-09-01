@@ -12,6 +12,7 @@ async function bootstrap() {
     .setTitle('ACUEM')
     .setDescription('The ACUEM API')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

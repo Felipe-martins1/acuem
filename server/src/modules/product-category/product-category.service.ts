@@ -4,6 +4,7 @@ import { EntityManager, rel } from '@mikro-orm/postgresql';
 import { ProductCategory } from './product-category.entity';
 import { ProductCategoryRepository } from './product-category.repository';
 import { Store } from '../store/store.entity';
+import { CurrentEmployee } from 'src/shared/auth';
 
 @Injectable()
 export class ProductCategoryService extends CrudService<
@@ -28,10 +29,16 @@ export class ProductCategoryService extends CrudService<
     });
   }
 
-  beforeCreate(entity: ProductCategory, auth: any): Promise<void> | void {
-    entity.store = rel(Store, auth.storeId);
+  beforeCreate(
+    entity: ProductCategory,
+    auth: CurrentEmployee,
+  ): Promise<void> | void {
+    entity.store = rel(Store, auth.store.id);
   }
-  beforeUpdate(entity: ProductCategory, auth: any): Promise<void> | void {
-    if (entity.store.id !== auth.storeId) throw new ForbiddenException();
+  beforeUpdate(
+    entity: ProductCategory,
+    auth: CurrentEmployee,
+  ): Promise<void> | void {
+    if (entity.store.id !== auth.store.id) throw new ForbiddenException();
   }
 }

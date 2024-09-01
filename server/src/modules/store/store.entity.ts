@@ -1,4 +1,5 @@
 import {
+  Embedded,
   Entity,
   EntityRepositoryType,
   ManyToOne,
@@ -8,6 +9,7 @@ import {
 } from '@mikro-orm/core';
 import { StoreRepository } from './store.repository';
 import { University } from '../university/university.entity';
+import { Address } from '../shared/embeddable/address';
 
 @Entity({
   repository: () => StoreRepository,
@@ -26,6 +28,9 @@ export class Store {
 
   @ManyToOne(() => University, { ref: true })
   university!: Rel<University>;
+
+  @Embedded(() => Address)
+  address: Address;
 
   static of(id: number): Store {
     const store = new Store();

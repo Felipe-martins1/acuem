@@ -1,8 +1,19 @@
-import { Embedded, Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import {
+  Embedded,
+  Entity,
+  EntityRepositoryType,
+  PrimaryKey,
+  Property,
+} from '@mikro-orm/core';
 import { Address } from '../shared/embeddable/address';
+import { UniversityRepository } from './university.repository';
 
-@Entity()
+@Entity({
+  repository: () => UniversityRepository,
+})
 export class University {
+  [EntityRepositoryType]: UniversityRepository;
+
   @PrimaryKey()
   id!: number;
 

@@ -13,4 +13,10 @@ export class Address {
 
   @Property()
   number!: string;
+
+  @Property()
+  city!: string;
+
+  @Property()
+  state!: string;
 }

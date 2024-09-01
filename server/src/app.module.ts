@@ -22,6 +22,8 @@ import { StoreController } from './modules/store/store.controller';
 import { PurchaseController } from './modules/purchase/purchase.controller';
 import { ConfigModule } from '@nestjs/config';
 import { UserController } from './modules/user/user.controller';
+import { UniversityModule } from './modules/university/university.module';
+import { UniversityCourseModule } from './modules/university-course/university-course.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { UserController } from './modules/user/user.controller';
     ProductCategoryModule,
     StoreModule,
     PurchaseModule,
+    UniversityModule,
+    UniversityCourseModule,
   ],
   controllers: [AppController],
 })
@@ -48,10 +52,20 @@ export class AppModule implements NestModule, OnModuleInit {
     consumer.apply(MikroOrmMiddleware).forRoutes('*');
     consumer
       .apply(AuthMiddleware)
-      .exclude({
-        path: 'users/login',
-        method: RequestMethod.POST,
-      })
+      .exclude(
+        {
+          path: 'users/login',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'users/student',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'users/employee',
+          method: RequestMethod.POST,
+        },
+      )
       .forRoutes(
         UserController,
         ProductController,

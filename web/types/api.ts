@@ -62,3 +62,12 @@ export type User = {
   type: 'student' | 'employee';
   createdAt: string;
 };
+
+export type University = {
+  id: number;
+  name: string;
+};
+export type UniversityCourse = {
+  id: number;
+  name: string;
+};
