@@ -5,10 +5,14 @@ import { Course } from '../../modules/course/course.entity';
 import { UniversityCourse } from '../../modules/university-course/university-course.entity';
 import { University } from '../../modules/university/university.entity';
 import { Student } from '../../modules/student/student.entity';
-import { hashPassword } from '../../shared/utils/password';
 import { Store } from '../../modules/store/store.entity';
 import { Product } from '../../modules/product/product.entity';
-import { Purchase } from '../../modules/purchase/purchase.entity';
+import {
+  Purchase,
+  PurchaseStatus,
+} from '../../modules/purchase/purchase.entity';
+import password from '../../shared/utils/password';
+import { Employee } from '../../modules/employee/employee.entity';
 
 export class DatabaseSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
@@ -38,10 +42,12 @@ export class DatabaseSeeder extends Seeder {
       university: uem,
     });
 
+    const hashedPassword = await password.hash('12345');
+
     const student = em.create(Student, {
       email: 'ra12345@uem.br',
       name: 'Felipe Martins',
-      password: hashPassword('12345'),
+      password: hashedPassword,
       phone: '44988888888',
       universityCourse: universityCourse,
       username: 'ra12345@uem.br',
@@ -52,6 +58,16 @@ export class DatabaseSeeder extends Seeder {
       cnpj: '37249940000129',
       name: 'Cantina UEM',
       university: uem,
+    });
+
+    em.create(Employee, {
+      email: 'employee@gmail.com',
+      name: 'Felipe Martins',
+      password: hashedPassword,
+      phone: '44988888888',
+      store: store,
+      username: 'employee@gmail.com',
+      type: 'employee',
     });
 
     const product = em.create(Product, {
@@ -76,6 +92,7 @@ export class DatabaseSeeder extends Seeder {
       date: new Date(),
       store: store,
       student: student,
+      status: PurchaseStatus.RECEIVED,
     });
 
     em.create(Purchase, {
@@ -87,6 +104,8 @@ export class DatabaseSeeder extends Seeder {
       ],
       store: store,
       student: student,
+      date: new Date(),
+      status: PurchaseStatus.RECEIVED,
     });
 
     em.create(Purchase, {
@@ -98,6 +117,8 @@ export class DatabaseSeeder extends Seeder {
       ],
       store: store,
       student: student,
+      date: new Date(),
+      status: PurchaseStatus.PENDING,
     });
   }
 }

@@ -8,6 +8,7 @@ import {
   OptionalProps,
   PrimaryKey,
   Property,
+  Rel,
 } from '@mikro-orm/core';
 import { PurchaseProduct } from './purchase-product.entity';
 import { Student } from '../student/student.entity';
@@ -34,26 +35,45 @@ export class Purchase {
   id!: number;
 
   @Property({
-    type: 'date',
     onCreate: () => new Date(),
+    type: Date,
+    columnType: 'timestamp',
   })
-  date = new Date();
+  date: Date = new Date();
 
   @Enum({ items: () => PurchaseStatus, default: PurchaseStatus.PENDING })
   status: PurchaseStatus;
 
-  @Property({ type: 'date', nullable: true })
+  @Property({
+    nullable: true,
+    type: Date,
+    columnType: 'timestamp',
+  })
   finishedAt?: Date;
+
+  @Property({
+    nullable: true,
+    type: Date,
+    columnType: 'timestamp',
+  })
+  cancelAt?: Date;
 
   @Property({ nullable: true })
   cancelCause?: string;
 
-  @ManyToOne()
-  student!: Student;
+  @ManyToOne(() => Student, { ref: true })
+  student!: Rel<Student>;
 
-  @ManyToOne()
-  store!: Store;
+  @ManyToOne(() => Store, { ref: true, eager: true })
+  store!: Rel<Store>;
 
   @OneToMany(() => PurchaseProduct, (pp) => pp.purchase)
   products = new Collection<PurchaseProduct>(this);
+
+  @Property({ persist: false })
+  get total() {
+    return this.products
+      .getItems()
+      .reduce((prev, prod) => (prev += prod.total), 0);
+  }
 }

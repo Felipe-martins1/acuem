@@ -6,17 +6,17 @@ import { useQueries } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { ProductCard } from './components/ProductCard';
 import { ProductScreen } from './components/ProductScreen';
-import { CheckoutScreen } from '../../components/Checkout/CheckoutScreen';
-import { useCheckout } from './hooks/useCheckout';
 import { useProductDetails } from './hooks/useProductDetails';
+import { useRouter } from 'next/navigation';
+import { Skeleton } from '@nextui-org/react';
 
 export default function Cantina() {
   const params = useParams<{
     id: string;
   }>();
+  const router = useRouter();
   const id = parseInt(params.id);
   const [productId, setProductId] = useProductDetails();
-  const [checkout, setCheckout] = useCheckout();
 
   const queries = useQueries({
     queries: [
@@ -40,24 +40,34 @@ export default function Cantina() {
 
   const handleProductScreenClose = (isAdded: boolean) => {
     if (isAdded) {
-      setCheckout(true);
+      return router.push('/carrinho');
     }
 
     setProductId(null);
   };
 
-  const selectedProduct = products?.find(prod => prod.id === productId);
+  const product = products?.find(prod => prod.id === productId);
 
-  if (checkout) {
-    return <CheckoutScreen onClose={() => setCheckout(false)} />;
-  }
-
-  if (selectedProduct) {
+  if (product) {
     return (
       <ProductScreen
-        product={selectedProduct}
+        product={product}
         onClose={type => handleProductScreenClose(type === 'added')}
       />
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-2 mt-6">
+        <Skeleton className="h-5 w-1/2" />
+        <div className="space-y-2">
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+        </div>
+      </div>
     );
   }
 

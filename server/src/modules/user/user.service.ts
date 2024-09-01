@@ -1,16 +1,22 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import { LoginUserDto } from './dto';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 import { CrudService } from 'src/shared/service/crud.service';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { SECRET } from 'src/config';
-import { hashPassword } from '../../shared/utils/password';
+import password from '../../shared/utils/password';
+import { JWTUser } from 'src/shared/types/JWTUser';
+import { ConfigService } from '@nestjs/config';
+import { Config } from 'src/shared/types/Config';
 
 @Injectable()
 export class UserService extends CrudService<string, User, UserRepository> {
-  constructor(repository: UserRepository, em: EntityManager) {
+  constructor(
+    repository: UserRepository,
+    em: EntityManager,
+    private configService: ConfigService<Config>,
+  ) {
     super(repository, em);
   }
 
@@ -27,16 +33,16 @@ export class UserService extends CrudService<string, User, UserRepository> {
     }
   }
 
-  beforeUpdate(entity: User): Promise<void> | void {
-    console.log('beforeUpdate', entity);
-  }
+  beforeUpdate(_entity: User): Promise<void> | void {}
 
   async findByLogin(loginUserDto: LoginUserDto): Promise<User | null> {
-    const user = await this.repository.findOne({
-      username: loginUserDto.email,
+    const user = await this.repository.findOneOrFail({
+      username: loginUserDto.username,
     });
 
-    if (user.password === hashPassword(loginUserDto.password)) return user;
+    const isValid = await password.verify(user.password, loginUserDto.password);
+
+    return isValid ? user : null;
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -54,8 +60,9 @@ export class UserService extends CrudService<string, User, UserRepository> {
         exp: exp.getTime() / 1000,
         id: user.id,
         username: user.username,
-      },
-      SECRET,
+        type: user.type,
+      } as JWTUser,
+      this.configService.get('JWT_SECRET'),
     );
   }
 }

@@ -1,12 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { CheckoutScreen } from '../components/Checkout/CheckoutScreen';
+import { CheckoutScreen } from '../../../components/Checkout/CheckoutScreen';
 
 const Carrinho = () => {
-  const router = useRouter();
-
-  return <CheckoutScreen onClose={() => router.push('/')} />;
+  return <CheckoutScreen />;
 };
 
 export default Carrinho;

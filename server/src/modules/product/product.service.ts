@@ -5,6 +5,7 @@ import { EntityManager, rel } from '@mikro-orm/postgresql';
 import { ProductRepository } from './product.repository';
 import { Store } from '../store/store.entity';
 import { FindAllWhere } from 'src/shared/types/FindAllFilter';
+import { CurrentEmployee } from 'src/shared/auth';
 
 @Injectable()
 export class ProductService extends CrudService<
@@ -25,13 +26,13 @@ export class ProductService extends CrudService<
     });
   }
 
-  beforeCreate(entity: Product, auth: any): Promise<void> | void {
-    entity.store = rel(Store, auth.storeId);
+  beforeCreate(entity: Product, auth: CurrentEmployee): Promise<void> | void {
+    entity.store = rel(Store, auth.store.id);
   }
-  beforeUpdate(_entity: Product, _auth: any): Promise<void> | void {
+  beforeUpdate(_entity: Product, _auth: CurrentEmployee): Promise<void> | void {
     return;
   }
-  beforeDelete(_entity: Product, _auth: any): Promise<void> | void {
+  beforeDelete(_entity: Product, _auth: CurrentEmployee): Promise<void> | void {
     throw new Error('Method not implemented');
   }
 
@@ -55,10 +56,8 @@ export class ProductService extends CrudService<
 
   static FilterByIdsIn(ids: number[]): FindAllWhere<Product> {
     return {
-      category: {
-        id: {
-          $in: ids,
-        },
+      id: {
+        $in: ids,
       },
     };
   }

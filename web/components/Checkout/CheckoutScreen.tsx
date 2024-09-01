@@ -1,23 +1,46 @@
 'use client';
 
 import { useCart } from '@/context/CartContext';
-import { Product } from '@/types/api';
 import { formatCurrency } from '@/utils/format';
-import { useCheckout } from '../../cantina/[id]/hooks/useCheckout';
 import { Button } from '@nextui-org/button';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { CheckoutDrawer } from './CheckoutDrawer';
+import { useRouter } from 'next/navigation';
+import { ActivePurchase } from './ActivePurchase';
+import { Spinner } from '@nextui-org/react';
+import { EmptyMessage } from './EmptyMessage';
+import { useActivePurchase } from '@/hooks/useActivePurchase';
 
-type Props = {
-  onClose: () => void;
-};
+export const CheckoutScreen = () => {
+  const router = useRouter();
 
-export const CheckoutScreen = ({ onClose }: Props) => {
   const [isFinish, setIsFinish] = useState(false);
-  const { operations, checkoutProducts } = useCart();
+  const { operations, checkoutProducts, storeId, isLoading } = useCart();
 
-  const totalValue = operations.calcTotalValue(checkoutProducts);
+  const { data: activePurchase, isLoading: isLoadingActivePurchase } =
+    useActivePurchase();
+
+  const returnToStore = () => {
+    router.push(`/cantina/${storeId}`);
+  };
+
+  useEffect(() => {
+    if (activePurchase) operations.clear();
+  }, [activePurchase]);
+
+  if (isLoading || isLoadingActivePurchase) {
+    return (
+      <div className="w-full h-full grid place-content-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (activePurchase) return <ActivePurchase purchase={activePurchase} />;
+  if (!checkoutProducts.length) return <EmptyMessage />;
+
+  const totalValue = operations.calcTotalValue();
 
   return (
     <div className="min-h-full relative flex flex-col justify-between">
@@ -47,7 +70,7 @@ export const CheckoutScreen = ({ onClose }: Props) => {
                   onClick={() => {
                     const restOne = operations.get(cProduct.id) === 1;
                     operations.remove(cProduct.id);
-                    if (restOne) onClose();
+                    if (restOne) returnToStore();
                   }}
                 >
                   <MinusIcon size={14} />
@@ -67,7 +90,10 @@ export const CheckoutScreen = ({ onClose }: Props) => {
           </div>
         ))}
 
-        <p onClick={() => onClose()} className="text-primary text-center mt-6">
+        <p
+          onClick={() => returnToStore()}
+          className="text-primary text-center mt-6"
+        >
           Adicionar mais itens
         </p>
       </div>
@@ -84,7 +110,6 @@ export const CheckoutScreen = ({ onClose }: Props) => {
       </div>
 
       <CheckoutDrawer
-        checkoutProducts={checkoutProducts}
         total={totalValue}
         open={isFinish}
         onOpenChange={setIsFinish}

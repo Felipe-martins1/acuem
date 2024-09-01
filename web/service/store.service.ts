@@ -1,14 +1,14 @@
 import { api } from '@/lib/axios';
 import BaseService from './baseService';
-import { Cantina } from '@/types/api';
+import { Cantina, Purchase } from '@/types/api';
 
 const resource = 'stores';
 
 const findDashboard = (storeId: number) => {
   return api
     .get<{
-      purchasesDay: any[];
-      purchasesMonth: any[];
+      purchasesDay: Purchase[];
+      purchasesMonth: Purchase[];
     }>(`${resource}/${storeId}/dashboard`)
     .then(value => value.data);
 };

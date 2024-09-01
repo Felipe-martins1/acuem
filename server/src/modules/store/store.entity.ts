@@ -4,6 +4,7 @@ import {
   ManyToOne,
   PrimaryKey,
   Property,
+  Rel,
 } from '@mikro-orm/core';
 import { StoreRepository } from './store.repository';
 import { University } from '../university/university.entity';
@@ -23,8 +24,8 @@ export class Store {
   @Property({ length: 14 })
   cnpj!: string;
 
-  @ManyToOne()
-  university!: University;
+  @ManyToOne(() => University, { ref: true })
+  university!: Rel<University>;
 
   static of(id: number): Store {
     const store = new Store();

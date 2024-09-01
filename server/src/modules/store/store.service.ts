@@ -31,6 +31,7 @@ export class StoreService extends CrudService<number, Store> {
           $lte: getEndOfDay(),
         },
       },
+      populate: ['*'],
     });
 
     const { start, end } = getMonthDateRange(
@@ -48,6 +49,7 @@ export class StoreService extends CrudService<number, Store> {
           $lte: end,
         },
       },
+      populate: ['*'],
     });
 
     return {

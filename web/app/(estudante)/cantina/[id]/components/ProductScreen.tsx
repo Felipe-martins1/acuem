@@ -64,8 +64,8 @@ export const ProductScreen = ({ product, onClose }: Props) => {
         <Button
           color="primary"
           onClick={() => {
-            operations.add(product, quantity);
-            onClose('added');
+            const added = operations.add(product, quantity);
+            if (added) onClose('added');
           }}
         >
           Adicionar <ShoppingCart />

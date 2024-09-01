@@ -8,7 +8,6 @@ import {
 } from '@mikro-orm/postgresql';
 
 import { UserRepository } from './user.repository';
-import { hashPassword } from '../../shared/utils/password';
 
 @Entity({
   repository: () => UserRepository,
@@ -42,10 +41,4 @@ export class User {
 
   @Property()
   createdAt = new Date();
-
-  constructor(email: string, password: string) {
-    this.username = email;
-    this.email = email;
-    this.password = hashPassword(password);
-  }
 }

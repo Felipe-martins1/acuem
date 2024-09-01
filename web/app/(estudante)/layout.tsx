@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { useQueryState } from 'nuqs';
 import { useRouter } from 'next/navigation';
 import { CartContextProvider, useCart } from '@/context/CartContext';
+import { Login } from './components/Login';
 
 const navItems = [
   {
@@ -82,7 +83,7 @@ export default function EstudanteLayout({
     );
   }
 
-  if (!authenticated) return 'ESTUDANTE';
+  if (!authenticated) return <Login />;
 
   return (
     <CartContextProvider>
@@ -130,8 +131,6 @@ export default function EstudanteLayout({
 
 const CartCount = () => {
   const { size } = useCart();
-
-  console.log(size);
 
   return size;
 };

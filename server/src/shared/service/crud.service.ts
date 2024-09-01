@@ -4,8 +4,7 @@ import {
   FindAllOptions,
 } from '@mikro-orm/postgresql';
 import { CrudEntity } from '../interface/crud-entity.interface';
-import { validate } from 'class-validator';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 export abstract class CrudService<
   ID,
@@ -19,17 +18,8 @@ export abstract class CrudService<
 
   async create(entity: T, auth: any): Promise<T> {
     await this.beforeCreate(entity, auth);
-    const errors = await validate(entity);
-
-    if (errors.length > 0) {
-      throw new BadRequestException({
-        message: 'Input data validation failed',
-        errors: errors,
-      });
-    } else {
-      await this.em.persistAndFlush(entity);
-      return entity;
-    }
+    await this.em.persistAndFlush(entity);
+    return entity;
   }
 
   async update(entity: T, auth: any): Promise<T> {

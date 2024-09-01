@@ -4,8 +4,7 @@ import { CrudController } from 'src/shared/controller/crud.controller';
 import { Store } from './store.entity';
 import { StoreDTO } from './dto';
 import { StoreService } from './store.service';
-import { PurchaseRepository } from '../purchase/purchase.repository';
-import { CurrentUser } from 'src/shared/auth';
+import { CurrentEmployee, CurrentUser } from 'src/shared/auth';
 
 @Controller('stores')
 @ApiTags('stores')
@@ -24,8 +23,11 @@ export class StoreController extends CrudController<number, Store, StoreDTO>({
     name: 'id',
     type: Number,
   })
-  async findDashboard(@Param('id') id: number, @CurrentUser() user: any) {
-    if (user.storeId !== Number(id)) throw new Error();
-    return this.service.findDashboard(user.storeId);
+  async findDashboard(
+    @Param('id') id: number,
+    @CurrentUser() user: CurrentEmployee,
+  ) {
+    if (user.store.id !== Number(id)) throw new Error();
+    return this.service.findDashboard(user.store.id);
   }
 }

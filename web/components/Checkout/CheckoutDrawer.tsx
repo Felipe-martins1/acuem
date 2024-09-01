@@ -7,35 +7,63 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
-} from '../../../../components/drawer';
+} from '../drawer';
 import { Listbox, ListboxItem } from '@nextui-org/listbox';
-import { Key, useEffect, useState } from 'react';
-import {
-  ArrowRight,
-  CheckCircleIcon,
-  CreditCardIcon,
-  DollarSignIcon,
-} from 'lucide-react';
-import { Product } from '@/types/api';
+import { useState } from 'react';
+import { CheckCircleIcon, CreditCardIcon, DollarSignIcon } from 'lucide-react';
 import { formatCurrency } from '@/utils/format';
-import { Divider, ScrollShadow } from '@nextui-org/react';
+import { Divider, ScrollShadow, Spinner } from '@nextui-org/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import PurchaseService from '@/service/purchase.service';
+import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 
 export const CheckoutDrawer = ({
-  checkoutProducts,
   total,
   open,
   onOpenChange,
 }: {
-  checkoutProducts: Product[];
   total: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
+  const { user } = useAuth();
+  const { operations, checkoutProducts, storeId } = useCart();
+
   const [step, setStep] = useState(0);
   const [meioPagamento, setMeioPagamento] = useState<Set<any> | any>(
     new Set([]),
   );
+
+  const queryClient = useQueryClient();
+
+  const { isPending, mutate } = useMutation({
+    mutationFn: (storeId: number) =>
+      PurchaseService.create({
+        studentId: user.id,
+        storeId,
+        products: checkoutProducts.map(product => ({
+          productId: product.id,
+          productName: product.name,
+          quantity: operations.get(product.id),
+        })),
+      }),
+    onSuccess: async () => {
+      setStep(2);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await queryClient.fetchQuery({
+        queryKey: ['purchases'],
+      });
+      onOpenChange(false);
+      setStep(0);
+    },
+  });
+
+  const handleNextStep = () => {
+    if (!storeId) return;
+    if (step === 1) return mutate(storeId);
+    setStep(prev => prev + 1);
+  };
 
   const stepsTitle = [
     {
@@ -46,21 +74,12 @@ export const CheckoutDrawer = ({
       description: 'Tudo certo! agora é só confirmar seu pedido',
     },
     {
-      title: 'Pedido finalizado!',
-      description: 'Agora é só aguardar o pedido e aproveitar!',
+      title: isPending ? 'Aguarde...' : 'Pedido finalizado!',
+      description: isPending
+        ? 'Estamos confirmando seu pedido'
+        : 'Agora é só aguardar o pedido e aproveitar!',
     },
   ];
-
-  useEffect(() => {
-    if (step === 2) {
-      const timer = setTimeout(() => {
-        onOpenChange(false);
-        setStep(0);
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [step, onOpenChange]);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} onClose={() => setStep(0)}>
@@ -102,30 +121,38 @@ export const CheckoutDrawer = ({
               </Listbox>
             ) : (
               <div className="px-5">
-                {step === 1 ? (
-                  <>
-                    <ScrollShadow className="max-h-[200px]">
-                      <ul>
-                        {checkoutProducts.map(product => (
-                          <li>
-                            {product.quantity}x - {product.name}
-                          </li>
-                        ))}
-                      </ul>
-                    </ScrollShadow>
-                    <Divider />
-                    <div className="mt-4 flex gap-1">
-                      <CreditCardIcon /> {meioPagamento}
-                    </div>
-
-                    <div className="font-semibold text-lg text-end mt-6">
-                      {formatCurrency(total)}
-                    </div>
-                  </>
-                ) : (
+                {isPending ? (
                   <div className="grid place-content-center min-h-[200px]">
-                    <CheckCircleIcon className="text-success w-32 h-32" />
+                    <Spinner className="w-32 h-32" />
                   </div>
+                ) : (
+                  <>
+                    {step === 1 ? (
+                      <>
+                        <ScrollShadow className="max-h-[200px]">
+                          <ul>
+                            {checkoutProducts.map(product => (
+                              <li>
+                                {product.quantity}x - {product.name}
+                              </li>
+                            ))}
+                          </ul>
+                        </ScrollShadow>
+                        <Divider />
+                        <div className="mt-4 flex gap-1">
+                          <CreditCardIcon /> {meioPagamento}
+                        </div>
+
+                        <div className="font-semibold text-lg text-end mt-6">
+                          {formatCurrency(total)}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="grid place-content-center min-h-[200px]">
+                        <CheckCircleIcon className="text-success w-32 h-32" />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
@@ -140,7 +167,7 @@ export const CheckoutDrawer = ({
                   <Button
                     className="flex-1"
                     color="primary"
-                    onClick={() => setStep(step + 1)}
+                    onClick={handleNextStep}
                   >
                     {step === 0 ? 'Confirmar' : 'Finalizar'}
                   </Button>

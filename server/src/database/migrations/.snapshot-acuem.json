@@ -718,13 +718,13 @@
         },
         "date": {
           "name": "date",
-          "type": "date",
+          "type": "timestamp",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 0,
-          "mappedType": "date"
+          "length": 6,
+          "mappedType": "datetime"
         },
         "status": {
           "name": "status",
@@ -746,13 +746,23 @@
         },
         "finished_at": {
           "name": "finished_at",
-          "type": "date",
+          "type": "timestamp",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 0,
-          "mappedType": "date"
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "cancel_at": {
+          "name": "cancel_at",
+          "type": "timestamp",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
         },
         "cancel_cause": {
           "name": "cancel_cause",

@@ -1,8 +1,10 @@
 'use client';
 
+import { useActivePurchase } from '@/hooks/useActivePurchase';
 import { usePersistInStorage } from '@/hooks/usePersistInStorage';
 import ProductService from '@/service/product.service';
-import { Product } from '@/types/api';
+
+import { Product, PurchaseStatus } from '@/types/api';
 import {
   Button,
   Modal,
@@ -13,11 +15,18 @@ import {
 } from '@nextui-org/react';
 import { useQuery } from '@tanstack/react-query';
 import { ShoppingCart } from 'lucide-react';
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useCallback,
+  useEffect,
+} from 'react';
 
 type CartContextData = {
   operations: {
-    add: (product: Product, quantity: number) => void;
+    add: (product: Product, quantity: number) => boolean;
     remove: (id: number) => void;
     clear: (id?: number) => void;
     get: (id: number) => number;
@@ -25,6 +34,8 @@ type CartContextData = {
   };
   checkoutProducts: Product[];
   size: number;
+  storeId?: number;
+  isLoading: boolean;
 };
 
 const CartContext = createContext<CartContextData>({} as CartContextData);
@@ -38,6 +49,9 @@ export const CartContextProvider = ({
   const [storeId, setStoreId] = useState<number | undefined>();
   const [itens, setItens] = useState<Record<number, number>>({});
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   usePersistInStorage(storeId, {
     key: 'storeId',
     setState: (store: string) => setStoreId(Number(store)),
@@ -48,11 +62,15 @@ export const CartContextProvider = ({
     setState: (itens: Record<number, number>) => setItens(itens),
   });
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [], isLoading } = useQuery({
     queryKey: ['products', storeId],
     queryFn: () => ProductService.findAllByStoreId(storeId!),
     enabled: !!storeId,
+    retry: false,
+    refetchInterval: Infinity,
   });
+
+  const { data: activePurchase } = useActivePurchase();
 
   const get = useCallback(
     (id: number) => {
@@ -62,7 +80,10 @@ export const CartContextProvider = ({
   );
 
   const add = useCallback((product: Product, quantity: number) => {
-    if (storeId && storeId !== product.storeId) return setClearCartAlert(true);
+    if (storeId && storeId !== product.storeId) {
+      setClearCartAlert(true);
+      return false;
+    }
     if (!storeId) setStoreId(product.storeId);
 
     setItens(prevMap => {
@@ -73,6 +94,8 @@ export const CartContextProvider = ({
         [product.id]: prevQuantity + quantity,
       };
     });
+
+    return true;
   }, []);
 
   const remove = useCallback((id: number) => {
@@ -107,6 +130,15 @@ export const CartContextProvider = ({
     return (prevValue += itens[Number(key)]);
   }, 0);
 
+  useEffect(() => {
+    const isRejected = activePurchase?.status === PurchaseStatus.REJECTED;
+
+    if (activePurchase && !isRejected && pathname !== '/carrinho') {
+      clear();
+      router.push('/carrinho');
+    }
+  }, [activePurchase]);
+
   return (
     <CartContext.Provider
       value={{
@@ -119,35 +151,39 @@ export const CartContextProvider = ({
         },
         checkoutProducts,
         size: size,
+        storeId,
+        isLoading: isLoading,
       }}
     >
-      <Modal isOpen={clearCartAlert} placement="center">
-        <ModalContent>
-          {onClose => (
-            <>
-              <ModalHeader className="text-center">
-                Você possui produtos de outra loja no carrinho
-              </ModalHeader>
-              <ModalBody className="text-center">
-                Deseja limpar seu carrinho para continuar?
-              </ModalBody>
-              <ModalFooter className="flex">
-                <Button className="flex-1" onClick={onClose}>
-                  Voltar
-                </Button>
-                <Button
-                  color="primary"
-                  className="flex-1"
-                  onClick={() => clear()}
-                >
-                  Limpar <ShoppingCart />
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-      {children}
+      <>
+        <Modal isOpen={clearCartAlert} placement="center">
+          <ModalContent>
+            {onClose => (
+              <>
+                <ModalHeader className="text-center">
+                  Você possui produtos de outra loja no carrinho
+                </ModalHeader>
+                <ModalBody className="text-center">
+                  Deseja limpar seu carrinho para continuar?
+                </ModalBody>
+                <ModalFooter className="flex">
+                  <Button className="flex-1" onClick={onClose}>
+                    Voltar
+                  </Button>
+                  <Button
+                    color="primary"
+                    className="flex-1"
+                    onClick={() => clear()}
+                  >
+                    Limpar <ShoppingCart />
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+        {children}
+      </>
     </CartContext.Provider>
   );
 };

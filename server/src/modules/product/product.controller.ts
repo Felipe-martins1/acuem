@@ -4,7 +4,8 @@ import { Product } from './product.entity';
 import { ProductDTO } from './dto';
 import { ProductService } from './product.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CurrentStudent, CurrentUser } from 'src/shared/auth';
+import { CurrentEmployee, CurrentStudent, CurrentUser } from 'src/shared/auth';
+import { User } from '../user/user.entity';
 
 @ApiTags('products')
 @Controller('products')
@@ -28,13 +29,13 @@ export class ProductController extends CrudController<
     type: ProductDTO,
   })
   async findAll(
-    @CurrentUser() user: any,
+    @CurrentUser() user: CurrentEmployee,
     @Query('categoryId') catId: number,
   ): Promise<ProductDTO[]> {
     return (
       await this.productService.findAll({
         where: {
-          ...ProductService.FilterByStoreId(user.storeId),
+          ...ProductService.FilterByStoreId(user.store.id),
           ...ProductService.FilterByCategory(catId),
         },
       })
@@ -47,13 +48,14 @@ export class ProductController extends CrudController<
     type: ProductDTO,
   })
   async findAllByStore(
-    @CurrentStudent() _user: any,
+    @CurrentStudent() _user: User,
     @Param('id') storeId: number,
   ): Promise<ProductDTO[]> {
     return (
       await this.productService.findAll({
         where: {
           ...ProductService.FilterByStoreId(storeId),
+          active: true,
         },
       })
     ).map((v) => new ProductDTO().from(v));

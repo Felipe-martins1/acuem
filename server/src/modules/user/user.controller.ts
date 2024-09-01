@@ -1,26 +1,23 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
-import { LoginUserDto, UserDTO } from './dto';
+import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
+import { LoginUserDto } from './dto';
 import { UserService } from './user.service';
 import { ILoginData } from './user.interface';
-import { User } from './user.entity';
-import { CrudController } from 'src/shared/controller/crud.controller';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/shared/auth';
 
 @ApiTags('users')
 @Controller('users')
-export class UserController extends CrudController<string, User, UserDTO>({
-  swagger: {
-    dtoType: {},
-    idType: String,
-  },
-}) {
-  constructor(private readonly userService: UserService) {
-    super(userService, new UserDTO());
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  @Get('me')
+  async me(@CurrentUser() user: CurrentUser): Promise<CurrentUser> {
+    return user;
   }
 
   @Post('login')
   @ApiBody({ type: LoginUserDto })
-  async login(@Body('user') loginUserDto: LoginUserDto): Promise<ILoginData> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<ILoginData> {
     const foundUser = await this.userService.findByLogin(loginUserDto);
 
     const errors = { message: 'User not found' };

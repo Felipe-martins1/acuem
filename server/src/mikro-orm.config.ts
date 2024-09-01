@@ -1,4 +1,8 @@
-import { defineConfig, Utils } from '@mikro-orm/postgresql';
+import {
+  defineConfig,
+  ReflectMetadataProvider,
+  Utils,
+} from '@mikro-orm/postgresql';
 import { Migrator } from '@mikro-orm/migrations';
 import { SeedManager } from '@mikro-orm/seeder';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
@@ -20,4 +24,6 @@ export default defineConfig({
       ? './src/database/seeders'
       : './dist/database/seeders',
   },
+  debug: true,
+  metadataProvider: ReflectMetadataProvider,
 });
