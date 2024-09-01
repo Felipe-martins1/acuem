@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Login from './components/login';
 import { useAuth } from '@/context/AuthContext';
+import { Button } from '@nextui-org/button';
 
 const navItems = [
   {
@@ -33,7 +34,7 @@ export default function CantinaLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { authenticated } = useAuth();
+  const { authenticated, logout } = useAuth();
 
   const pathname = usePathname();
 
@@ -45,7 +46,9 @@ export default function CantinaLayout({
 
   return (
     <>
-      <header className={`sticky top-0 w-full h-[80px] bg-red-800 px-4 z-20`}>
+      <header
+        className={`sticky top-0 w-full h-[80px] bg-red-800 px-4 z-20 flex justify-between items-center`}
+      >
         <div className="max-w-[210px] flex items-center h-full">
           <Image
             src="/uem-full.svg"
@@ -54,6 +57,8 @@ export default function CantinaLayout({
             height={40}
           />
         </div>
+
+        <Button onClick={() => logout()}>Sair</Button>
       </header>
       <div className="flex">
         <div

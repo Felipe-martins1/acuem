@@ -10,6 +10,7 @@ type ContextData = {
   login: (username: string, password: string) => Promise<void>;
   user: User | undefined;
   isLoading: boolean;
+  logout: () => void;
 };
 
 const AuthContext = createContext({
@@ -17,6 +18,7 @@ const AuthContext = createContext({
   login: () => Promise.resolve() as Promise<void>,
   user: {} as User | undefined,
   isLoading: true,
+  logout: () => null,
 } as ContextData);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -66,6 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         user: data,
         isLoading: isFetching || isPending,
+        logout,
       }}
     >
       {children}
