@@ -8,6 +8,9 @@ import { Purchase, PurchaseStatus } from '../purchase.entity';
 import { Store } from 'src/modules/store/store.entity';
 import { Student } from 'src/modules/student/student.entity';
 
+import { AddressDTO } from 'src/shared/dto/address.dto';
+import { Address } from 'src/modules/shared/embeddable/address';
+
 export class PurchaseProductDTO
   implements BaseDTO<PurchaseProduct, PurchaseProductDTO>
 {
@@ -75,6 +78,9 @@ export class PurchaseDTO implements BaseDTO<Purchase, PurchaseDTO> {
   storeName: string;
 
   @ApiProperty()
+  storeAddress: AddressDTO;
+
+  @ApiProperty()
   products: PurchaseProductDTO[];
 
   @ApiProperty()
@@ -95,7 +101,13 @@ export class PurchaseDTO implements BaseDTO<Purchase, PurchaseDTO> {
 
     dto.id = entity.id;
     dto.storeId = entity.store.id;
-    dto.storeName = wrap(entity.store).toObject().name;
+
+    const storeObject = wrap(entity.store).toObject();
+
+    dto.storeName = storeObject.name;
+    dto.storeAddress = storeObject.address
+      ? new AddressDTO().from(storeObject.address as Address)
+      : null;
     dto.studentName = wrap(entity.student).toObject().name;
     dto.studentId = entity.student.id;
 

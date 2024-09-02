@@ -19,6 +19,7 @@ export type Cantina = {
   name: string;
   cnpj: string;
   universityId: number;
+  address: Address;
 };
 
 export type PurchaseProduct = {
@@ -50,6 +51,7 @@ export type Purchase = {
   status: PurchaseStatus;
   cancelCause?: string;
   total: number;
+  storeAddress: Address;
 };
 
 export type User = {
@@ -67,7 +69,17 @@ export type University = {
   id: number;
   name: string;
 };
+
 export type UniversityCourse = {
   id: number;
   name: string;
+};
+
+export type Address = {
+  street: string;
+  neighborhood: string;
+  complement: string;
+  number: string;
+  city: string;
+  state: string;
 };

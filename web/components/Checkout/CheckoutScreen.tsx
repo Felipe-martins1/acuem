@@ -81,6 +81,7 @@ export const CheckoutScreen = () => {
                   size="sm"
                   color="primary"
                   className="w-6 h-6"
+                  isDisabled={operations.get(cProduct.id) === cProduct.quantity}
                   onClick={() => operations.add(cProduct, 1)}
                 >
                   <PlusIcon size={14} />

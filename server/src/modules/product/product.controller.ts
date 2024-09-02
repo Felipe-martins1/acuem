@@ -57,6 +57,9 @@ export class ProductController extends CrudController<
         where: {
           ...ProductService.FilterByStoreId(storeId),
           active: true,
+          quantity: {
+            $gt: 0,
+          },
         },
       })
     ).map((v) => new ProductDTO().from(v));

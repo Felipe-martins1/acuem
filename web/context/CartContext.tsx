@@ -88,10 +88,13 @@ export const CartContextProvider = ({
 
     setItens(prevMap => {
       const prevQuantity = prevMap[product.id] || 0;
+      const nextQuantity = prevQuantity + quantity;
+
+      const isMoreThanMax = nextQuantity > product.quantity;
 
       return {
         ...prevMap,
-        [product.id]: prevQuantity + quantity,
+        [product.id]: isMoreThanMax ? product.quantity : nextQuantity,
       };
     });
 

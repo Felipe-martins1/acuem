@@ -5,7 +5,14 @@ const resource = 'purchases';
 
 type CreatePurchaseDTO = Omit<
   Purchase,
-  'id' | 'products' | 'storeName' | 'status' | 'total' | 'studentName' | 'date'
+  | 'id'
+  | 'products'
+  | 'storeName'
+  | 'status'
+  | 'total'
+  | 'studentName'
+  | 'date'
+  | 'storeAddress'
 > & {
   products: Omit<PurchaseProduct, 'id' | 'purchaseId' | 'productPrice'>[];
 };

@@ -1,10 +1,12 @@
+import { useAuth } from '@/context/AuthContext';
 import { useActivePurchase } from '@/hooks/useActivePurchase';
 import PurchaseService from '@/service/purchase.service';
+import StoreService from '@/service/store.service';
 import { Purchase, PurchaseStatus } from '@/types/api';
 import { cn } from '@/utils/cn';
-import { formatCurrency } from '@/utils/format';
+import { formatCurrency, goToMaps, mapsUrl } from '@/utils/format';
 import { Button, Card, CardBody, CardFooter, Link } from '@nextui-org/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MapIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -28,6 +30,7 @@ const statusText = {
 
 export const ActivePurchase = ({ purchase }: { purchase: Purchase }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   const colors = {
     text: statusColors[purchase.status][1],
@@ -45,6 +48,8 @@ export const ActivePurchase = ({ purchase }: { purchase: Purchase }) => {
       router.push('/');
     },
   });
+
+  const codigo = user?.phone?.slice(user.phone.length - 4, user.phone.length);
 
   return (
     <div className="relative min-h-full flex flex-col justify-between">
@@ -87,19 +92,16 @@ export const ActivePurchase = ({ purchase }: { purchase: Purchase }) => {
           <CardBody className="items-start justify-between flex-row">
             <p>
               Seu código de retirada é:{' '}
-              <span className={cn('font-semibold text-primary')}>1234</span>
+              <span className={cn('font-semibold text-primary')}>{codigo}</span>
             </p>
           </CardBody>
         </Card>
-        <Link
-          className="mt-2 flex items-center gap-2"
-          isExternal
-          href="www.google.com"
-          color="foreground"
-          underline="always"
+        <p
+          className="mt-2 flex items-center gap-2 underline"
+          onClick={() => goToMaps(purchase.storeAddress)}
         >
           Endereço da cantina <MapIcon />
-        </Link>
+        </p>
 
         <div className="mt-6">
           <div className="flex items-center justify-between text-semibold mb-2">

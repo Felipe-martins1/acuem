@@ -8,51 +8,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 
-const cantinas: Cantina[] = [
-  {
-    cnpj: '123',
-    id: 1,
-    name: 'Cantina XYZ',
-    universityId: 1,
-  },
-  {
-    cnpj: '123',
-    id: 1,
-    name: 'Cantina XYZ',
-    universityId: 1,
-  },
-  {
-    cnpj: '123',
-    id: 1,
-    name: 'Cantina XYZ',
-    universityId: 1,
-  },
-  {
-    cnpj: '123',
-    id: 1,
-    name: 'Cantina XYZ',
-    universityId: 1,
-  },
-  {
-    cnpj: '123',
-    id: 1,
-    name: 'Cantina XYZ',
-    universityId: 1,
-  },
-  {
-    cnpj: '123',
-    id: 1,
-    name: 'Cantina XYZ',
-    universityId: 1,
-  },
-  {
-    cnpj: '123',
-    id: 1,
-    name: 'Cantina XYZ',
-    universityId: 1,
-  },
-];
-
 export const StoreSearch = () => {
   const [search, _] = useQueryState('s');
   const router = useRouter();

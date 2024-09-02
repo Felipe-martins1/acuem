@@ -40,7 +40,7 @@ export const CheckoutDrawer = ({
   const { isPending, mutate } = useMutation({
     mutationFn: (storeId: number) =>
       PurchaseService.create({
-        studentId: user.id,
+        studentId: user!.id,
         storeId,
         products: checkoutProducts.map(product => ({
           productId: product.id,

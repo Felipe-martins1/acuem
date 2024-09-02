@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CrudService } from 'src/shared/service/crud.service';
 import { Product } from './product.entity';
 import { EntityManager, rel } from '@mikro-orm/postgresql';
@@ -6,6 +6,7 @@ import { ProductRepository } from './product.repository';
 import { Store } from '../store/store.entity';
 import { FindAllWhere } from 'src/shared/types/FindAllFilter';
 import { CurrentEmployee } from 'src/shared/auth';
+import { Purchase } from '../purchase/purchase.entity';
 
 @Injectable()
 export class ProductService extends CrudService<
@@ -24,6 +25,34 @@ export class ProductService extends CrudService<
         ...ProductService.FilterByIdsIn(ids),
       },
     });
+  }
+
+  async updateQuantity(
+    purchase: Purchase,
+    transactionalEm: EntityManager = this.em,
+  ) {
+    const products = await this.findAllByStoreIdAndIdIn(
+      purchase.store.id,
+      purchase.products.getItems().map((pp) => pp.product.id),
+    );
+
+    for (const product of products) {
+      const purchaseQuantity = purchase.products.find(
+        (prod) => prod.product.id === product.id,
+      ).quantity;
+
+      product.quantity -= purchaseQuantity;
+
+      if (product.quantity < 0) {
+        throw new BadRequestException(
+          `Quantidade inválida para o item ${product.name}`,
+        );
+      }
+
+      transactionalEm.persist(product);
+    }
+
+    await transactionalEm.flush();
   }
 
   beforeCreate(entity: Product, auth: CurrentEmployee): Promise<void> | void {

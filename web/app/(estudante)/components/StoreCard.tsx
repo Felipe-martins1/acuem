@@ -1,4 +1,5 @@
 import { Cantina } from '@/types/api';
+import { goToMaps } from '@/utils/format';
 import { Button } from '@nextui-org/button';
 import { ArrowRight, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -10,6 +11,10 @@ export const StoreCard = ({ store }: { store: Cantina }) => {
     router.push(`/cantina/${id}`);
   };
 
+  const onClickAddress = () => {
+    goToMaps(store.address);
+  };
+
   return (
     <div
       className="p-1 bg-background rounded-lg flex gap-1 items-center justify-between"
@@ -18,8 +23,14 @@ export const StoreCard = ({ store }: { store: Cantina }) => {
       <div className="h-20 w-20 rounded-md bg-gray-600"></div>
       <div className="flex-1 self-start">
         <span className="text-md font-semibold">{store.name}</span>
-        <div className="flex items-center text-sm gap-1">
-          <span>Bloco D67</span>
+        <div
+          className="flex items-center text-sm gap-1 underline"
+          onClick={e => {
+            e.stopPropagation();
+            onClickAddress();
+          }}
+        >
+          <span>Endereço</span>
           <MapPin size={16} />
         </div>
       </div>

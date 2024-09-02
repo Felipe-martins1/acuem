@@ -14,8 +14,10 @@ type Props = {
 
 export const ProductScreen = ({ product, onClose }: Props) => {
   const [quantity, setQuantity] = useState(0);
+  const maxQuantity = product.quantity;
 
-  const handleAdd = () => setQuantity(prev => prev + 1);
+  const handleAdd = () =>
+    setQuantity(prev => (prev < maxQuantity ? prev + 1 : prev));
   const handleRemove = () => setQuantity(prev => (prev > 0 ? prev - 1 : 0));
 
   const { operations } = useCart();
@@ -55,6 +57,7 @@ export const ProductScreen = ({ product, onClose }: Props) => {
             isIconOnly
             className="bg-transparent"
             size="sm"
+            isDisabled={quantity === product.quantity}
             onClick={() => handleAdd()}
           >
             <PlusIcon className="text-primary" />

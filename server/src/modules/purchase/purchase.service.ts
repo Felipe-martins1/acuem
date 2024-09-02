@@ -32,8 +32,15 @@ export class PurchaseService {
     entity.status = PurchaseStatus.PENDING;
 
     const createdEntity = this.repository.create(entity);
-    this.em.persistAndFlush(createdEntity);
-    return createdEntity;
+
+    await this.em.transactional((tEm) => {
+      return Promise.all([
+        tEm.persistAndFlush(createdEntity),
+        this.productService.updateQuantity(createdEntity, tEm),
+      ]);
+    });
+
+    return await this.em.populate(createdEntity, ['store', 'products']);
   }
 
   public async cancel(purchaseId: number, cause: string) {
@@ -76,14 +83,7 @@ export class PurchaseService {
       nextStatus = PurchaseStatus.STARTED;
     }
 
-    return this.repository.nativeUpdate(
-      {
-        id: purchase.id,
-      },
-      {
-        status: nextStatus,
-      },
-    );
+    return this.updateStatus(purchaseId, nextStatus);
   }
 
   public findActiveByStudent(studentId: string) {
