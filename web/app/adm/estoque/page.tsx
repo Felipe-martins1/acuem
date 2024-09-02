@@ -1,6 +1,5 @@
 'use client';
 
-import CategoryService from '@/service/category.service';
 import {
   Button,
   Table,

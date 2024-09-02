@@ -1,3 +1,5 @@
+'use client';
+
 import { Modal, ModalContent, Spinner } from '@nextui-org/react';
 
 export const Loader = ({ loading }: { loading: boolean }) => (

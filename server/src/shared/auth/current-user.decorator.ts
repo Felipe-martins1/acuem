@@ -17,7 +17,7 @@ const getUserFromCtx = (
   return req.user || null;
 };
 
-export const CurrentUser = createParamDecorator(
+export const GetCurrentUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const user = getUserFromCtx(ctx);
     if (!user) return null;
@@ -40,7 +40,7 @@ export const CurrentStudent = createParamDecorator(
   },
 );
 
-export const CurrentEmployee = createParamDecorator(
+export const GetCurrentEmployee = createParamDecorator(
   (data, ctx: ExecutionContext) => {
     const user = getUserFromCtx(ctx);
 

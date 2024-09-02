@@ -4,6 +4,7 @@ import { api } from '@/lib/axios';
 const resource = 'users';
 
 export type RegisterData = Pick<User, 'name' | 'email' | 'password' | 'phone'>;
+export type UpdateData = Pick<User, 'name' | 'email' | 'phone'>;
 
 const AuthService = {
   me: () => api.get<User>(`${resource}/me`).then(res => res.data),
@@ -22,6 +23,13 @@ const AuthService = {
       .post<boolean>(`${resource}/student`, {
         ...regData,
         universityCourseId,
+      })
+      .then(data => data.data),
+  update: (regData: UpdateData) =>
+    api
+      .put<boolean>(`${resource}/profile`, {
+        ...regData,
+        username: regData.email,
       })
       .then(data => data.data),
 };

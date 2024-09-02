@@ -31,8 +31,12 @@ export class UserDTO implements BaseDTO<User, UserDTO> {
   }
 
   to(dto: UserDTO, existing?: User): User {
-    const user = new User() || existing;
-    user.id = dto.id;
+    if (!existing) throw new Error('User must be created before call this');
+    const user = existing;
+    user.email = dto.email;
+    user.username = dto.username;
+    user.phone = dto.phone;
+    user.name = dto.name;
     return user;
   }
 }

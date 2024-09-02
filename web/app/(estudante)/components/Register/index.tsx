@@ -1,3 +1,4 @@
+'use client';
 import UniversityCourseService from '@/service/course.service';
 import UniversityService from '@/service/university.service';
 import { Button } from '@nextui-org/button';
@@ -6,8 +7,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { parseAsBoolean, useQueryState } from 'nuqs';
 import { createContext, useContext, useState } from 'react';
-import { validateUserData } from './validateUser';
 import AuthService, { RegisterData } from '@/service/auth.service';
+import { validateUserData } from '@/utils/validateUser';
 
 type StepProps = {
   onNext: () => void;
@@ -202,6 +203,7 @@ const Step4 = () => {
               errorMessage={errors.phone}
               value={userData.phone}
               onValueChange={value => onChangeUserData('phone', value || '')}
+              maxLength={15}
             />
           </div>
         </>

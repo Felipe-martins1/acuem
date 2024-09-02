@@ -1,5 +1,5 @@
-const Perfil = () => {
-  return <h1>Perfil</h1>;
-};
+'use client';
 
-export default Perfil;
+import { Profile } from '@/components/Profile';
+
+export default Profile;

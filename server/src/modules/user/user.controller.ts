@@ -1,9 +1,21 @@
-import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
-import { CreateEmployeeDto, CreateStudentDto, LoginUserDto } from './dto';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Post,
+  Put,
+} from '@nestjs/common';
+import {
+  CreateEmployeeDto,
+  CreateStudentDto,
+  LoginUserDto,
+  UserDTO,
+} from './dto';
 import { UserService } from './user.service';
 import { ILoginData } from './user.interface';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from 'src/shared/auth';
+import { CurrentUser, GetCurrentUser } from 'src/shared/auth';
 
 @ApiTags('users')
 @Controller('users')
@@ -12,7 +24,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('me')
-  async me(@CurrentUser() user: CurrentUser): Promise<CurrentUser> {
+  async me(@GetCurrentUser() user: CurrentUser): Promise<CurrentUser> {
     return user;
   }
 
@@ -29,6 +41,23 @@ export class UserController {
       token: token,
       user: foundUser,
     };
+  }
+
+  @Put('profile')
+  @ApiBody({ type: UserDTO })
+  async update(
+    @Body() updateUserDto: UserDTO,
+    @GetCurrentUser() user: CurrentUser,
+  ): Promise<boolean> {
+    const foundUser = await this.userService.findById(user.id);
+
+    if (!foundUser) {
+      throw new HttpException('Usuário não encontrado, tente novamente.', 401);
+    }
+
+    return this.userService
+      .update(new UserDTO().to(updateUserDto, foundUser), user)
+      .then(() => true);
   }
 
   @Post('student')

@@ -4,8 +4,12 @@ import { CrudController } from 'src/shared/controller/crud.controller';
 import { ProductCategory } from './product-category.entity';
 import { ProductCategoryDTO } from './dto';
 import { ProductCategoryService } from './product-category.service';
-import { CurrentEmployee, CurrentStudent, CurrentUser } from 'src/shared/auth';
-import { User } from '../user/user.entity';
+import {
+  CurrentEmployee,
+  CurrentStudent,
+  CurrentUser,
+  GetCurrentUser,
+} from 'src/shared/auth';
 
 @Controller('categories')
 @ApiTags('categories')
@@ -30,7 +34,7 @@ export class ProductCategoryController extends CrudController<
     type: ProductCategoryDTO,
   })
   async findAll(
-    @CurrentUser() user: CurrentEmployee,
+    @GetCurrentUser() user: CurrentEmployee,
   ): Promise<ProductCategoryDTO[]> {
     return (await this.service.findAllByStoreId(user.store.id)).map((v) =>
       new ProductCategoryDTO().from(v),
@@ -43,7 +47,7 @@ export class ProductCategoryController extends CrudController<
     type: ProductCategoryDTO,
   })
   async findAllByStore(
-    @CurrentStudent() _user: User,
+    @CurrentStudent() _user: CurrentUser,
     @Param('id') storeId: number,
   ): Promise<ProductCategoryDTO[]> {
     return (await this.service.findAllByStoreId(storeId)).map((v) =>

@@ -39,7 +39,11 @@ export const CancelPurchaseModal = ({
           <>
             <ModalHeader>Deseja mesmo cancelar o pedido?</ModalHeader>
             <ModalBody>
-              <Textarea value={reason} onValueChange={setReason} />
+              <Textarea
+                value={reason}
+                onValueChange={setReason}
+                maxLength={255}
+              />
             </ModalBody>
             <ModalFooter>
               <Button onClick={onClose}>Não</Button>

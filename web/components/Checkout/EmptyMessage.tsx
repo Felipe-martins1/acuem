@@ -1,5 +1,7 @@
+'use client';
+
 import { Button } from '@nextui-org/button';
-import { Link } from '@nextui-org/link';
+import Link from 'next/link';
 
 export const EmptyMessage = () => {
   return (

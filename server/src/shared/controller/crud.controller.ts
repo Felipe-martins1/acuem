@@ -3,7 +3,7 @@ import { Body, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { BaseDTO } from '../interface/base.dto';
 import { CrudService } from '../service/crud.service';
 import { ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { CurrentUser } from '../auth';
+import { GetCurrentUser } from '../auth';
 
 type Props = {
   swagger: {
@@ -52,7 +52,7 @@ export function CrudController<
     @ApiResponse({
       content: swagger.dtoType,
     })
-    async create(@Body() dto: DTO, @CurrentUser() user: any): Promise<DTO> {
+    async create(@Body() dto: DTO, @GetCurrentUser() user: any): Promise<DTO> {
       return this.converter.from(
         await this.service.create(await this.converter.to(dto), user),
       );
@@ -72,7 +72,7 @@ export function CrudController<
     async update(
       @Param('id') id: ID,
       @Body() dto: DTO,
-      @CurrentUser() user: any,
+      @GetCurrentUser() user: any,
     ): Promise<DTO> {
       const entity = await this.service.findByIdOrThrow(id);
       const entityToSave = await this.converter.to(dto, entity);
@@ -85,7 +85,10 @@ export function CrudController<
       name: 'id',
       type: swagger.idType,
     })
-    async delete(@Param('id') id: ID, @CurrentUser() user: any): Promise<void> {
+    async delete(
+      @Param('id') id: ID,
+      @GetCurrentUser() user: any,
+    ): Promise<void> {
       return this.service.delete(id, user);
     }
   }

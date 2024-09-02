@@ -1,5 +1,7 @@
+'use client';
+
 import { TOKEN_KEY } from '@/config/storage';
-import { api } from '@/lib/axios';
+
 import AuthService from '@/service/auth.service';
 import { User } from '@/types/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

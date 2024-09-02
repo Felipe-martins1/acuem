@@ -1,7 +1,7 @@
+'use client';
+
 import { useAuth } from '@/context/AuthContext';
-import { useActivePurchase } from '@/hooks/useActivePurchase';
 import PurchaseService from '@/service/purchase.service';
-import StoreService from '@/service/store.service';
 import { Purchase, PurchaseStatus } from '@/types/api';
 import { cn } from '@/utils/cn';
 import { formatCurrency, goToMaps, mapsUrl } from '@/utils/format';

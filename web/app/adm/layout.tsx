@@ -1,7 +1,5 @@
 'use client';
 
-import '@/styles/globals.css';
-
 import { Archive, HomeIcon, ScrollText } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/utils/cn';

@@ -12,7 +12,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ProductService from '@/service/product.service';
 
-type FormState = Partial<Omit<Product, 'active'>>;
+type FormState = Partial<Omit<Product, 'active' | 'storeId'>>;
 
 const validateForm = (
   data: FormState,
@@ -132,6 +132,7 @@ export const ProductForm = ({
           onValueChange={value => setFieldValue('name', value)}
           errorMessage={errors.name}
           isInvalid={!!errors.name}
+          maxLength={255}
         />
         <Textarea
           label="Descrição"
@@ -139,6 +140,7 @@ export const ProductForm = ({
           onValueChange={value => setFieldValue('description', value)}
           errorMessage={errors.description}
           isInvalid={!!errors.description}
+          maxLength={255}
         />
 
         <Input

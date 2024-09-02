@@ -1,3 +1,5 @@
+'use client';
+
 import { parseAsInteger, useQueryState } from 'nuqs';
 
 export const useProductDetails = () => {

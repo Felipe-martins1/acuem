@@ -1,3 +1,5 @@
+'use client';
+
 import { Cantina } from '@/types/api';
 import { goToMaps } from '@/utils/format';
 import { Button } from '@nextui-org/button';

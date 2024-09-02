@@ -9,9 +9,13 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PurchaseService } from './purchase.service';
 import { PurchaseDTO } from './dto';
-import { CurrentEmployee, CurrentStudent, CurrentUser } from 'src/shared/auth';
-import { User } from '../user/user.entity';
-
+import {
+  CurrentEmployee,
+  CurrentStudent,
+  CurrentUser,
+  GetCurrentEmployee,
+  GetCurrentUser,
+} from 'src/shared/auth';
 @Controller('purchases')
 @ApiTags('purchases')
 @ApiBearerAuth()
@@ -20,7 +24,7 @@ export class PurchaseController {
   constructor(private readonly service: PurchaseService) {}
 
   @Post()
-  async create(@Body() dto: PurchaseDTO, @CurrentStudent() user: User) {
+  async create(@Body() dto: PurchaseDTO, @CurrentStudent() user: CurrentUser) {
     dto.studentId = user.id;
     return this.converter.from(
       await this.service.create(this.converter.to(dto)),
@@ -28,12 +32,12 @@ export class PurchaseController {
   }
 
   @Get('student/active')
-  async findActiveByUser(@CurrentStudent() user: User) {
+  async findActiveByUser(@CurrentStudent() user: CurrentUser) {
     return this.converter.from(await this.service.findActiveByStudent(user.id));
   }
 
   @Post('student/receive')
-  async confirmReceive(@CurrentStudent() user: User) {
+  async confirmReceive(@CurrentStudent() user: CurrentUser) {
     const activePurchase = await this.service.findActiveByStudent(user.id);
     if (!activePurchase) {
       throw new NotFoundException('Pedido não encontrado');
@@ -43,7 +47,7 @@ export class PurchaseController {
   }
 
   @Get('store')
-  async findAllByStore(@CurrentUser() user: CurrentEmployee) {
+  async findAllByStore(@GetCurrentUser() user: CurrentEmployee) {
     const purchases = await this.service.findAllByStore(user.store.id);
 
     return purchases.map((purchase) => this.converter.from(purchase));
@@ -51,7 +55,7 @@ export class PurchaseController {
 
   @Post(':id/status/next')
   async nextStatus(
-    @CurrentUser() user: CurrentEmployee,
+    @GetCurrentUser() user: CurrentEmployee,
     @Param('id') id: number,
     @Body('skipConfirm') skipConfirm?: boolean,
   ) {
@@ -62,7 +66,7 @@ export class PurchaseController {
 
   @Post(':id/cancel')
   async cancel(
-    @CurrentEmployee() user: CurrentEmployee,
+    @GetCurrentEmployee() user: CurrentEmployee,
     @Param('id') id: number,
     @Body('reason') reason: string,
   ) {

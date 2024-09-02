@@ -23,7 +23,7 @@ export class User {
   @Property()
   username: string;
 
-  @Property({ hidden: true })
+  @Property()
   @IsEmail()
   email: string;
 
@@ -39,6 +39,6 @@ export class User {
   @Enum()
   type!: 'student' | 'employee';
 
-  @Property()
+  @Property({ onCreate: () => new Date(), type: Date, columnType: 'timestamp' })
   createdAt = new Date();
 }

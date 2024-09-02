@@ -1,8 +1,9 @@
+'use client';
+
 import { useAuth } from '@/context/AuthContext';
 import { useLoginValidation } from '@/hooks/useLoginValidation';
 import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
-import { Link } from '@nextui-org/link';
 import { parseAsBoolean, useQueryState } from 'nuqs';
 import { FormEvent, useState } from 'react';
 import { Register } from '../Register';
