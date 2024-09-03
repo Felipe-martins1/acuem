@@ -431,13 +431,11 @@
         },
         "price": {
           "name": "price",
-          "type": "numeric(10,0)",
+          "type": "decimal",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "precision": 10,
-          "scale": 0,
           "mappedType": "decimal"
         },
         "quantity": {
@@ -693,7 +691,7 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamptz",
+          "type": "timestamp",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,

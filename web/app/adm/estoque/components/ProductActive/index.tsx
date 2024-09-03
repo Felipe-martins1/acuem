@@ -1,11 +1,12 @@
 import ProductService from '@/service/product.service';
 import { Product } from '@/types/api';
 import { Switch } from '@nextui-org/switch';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export const ProductActive = ({ product }: { product: Product }) => {
   const [active, setActive] = useState(product.active);
+  const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
@@ -16,7 +17,12 @@ export const ProductActive = ({ product }: { product: Product }) => {
         active: active,
       });
     },
-    onSuccess: data => setActive(data.active),
+    onSuccess: data => {
+      setActive(data.active);
+      queryClient.refetchQueries({
+        queryKey: ['products'],
+      });
+    },
   });
 
   useEffect(() => {

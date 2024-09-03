@@ -10,10 +10,7 @@ import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 export default defineConfig({
   entities: ['dist/modules/**/*.entity.js'],
   entitiesTs: ['src/modules/**/*.entity.ts'],
-  dbName: 'acuem',
   driver: PostgreSqlDriver,
-  password: 'admin',
-  user: 'postgres',
   extensions: [SeedManager, Migrator],
   migrations: {
     path: process.cwd() + '/dist/database/migrations',
@@ -24,6 +21,10 @@ export default defineConfig({
       ? './src/database/seeders'
       : './dist/database/seeders',
   },
-  debug: true,
   metadataProvider: ReflectMetadataProvider,
+  dbName: 'acuem', // Nome do banco de dados
+  password: 'admin', // Senha do banco de dados
+  user: 'postgres', // Usuário do banco de dados
+  // host: 'seuhost', // Host do banco de dados (Opcional Para banco de dados local, se utilizar o default)
+  // port: 'suaporta', // Porta do banco de dados (Opcional Para banco de dados local, se utilizar a default)
 });
