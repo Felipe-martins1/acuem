@@ -135,7 +135,7 @@ export const CheckoutDrawer = ({
                           <ul>
                             {checkoutProducts.map(product => (
                               <li>
-                                {product.quantity}x - {product.name}
+                                {operations.get(product.id)}x - {product.name}
                               </li>
                             ))}
                           </ul>
