@@ -6,7 +6,7 @@ Neste repositório estão contidos tanto o projeto do frontend quanto o do backe
 
 #### Server
 Nesta pasta está o projeto do backend, que foi construido utilizando o Framework
-[Nestjs](https://nestjs.com/), como ORM utilizamos o [MikroORM](https://mikro-orm.io/)
+[Nestjs](https://nestjs.com/), como ORM utilizamos o [MikroORM](https://mikro-orm.io/) e como banco de dados [PostgreSQL](https://www.postgresql.org/)
 
 #### Web
 Nesta pasta está contido o projeto do frontend, que foi construido
