@@ -59,6 +59,8 @@ Após isso, siga as instruções e alguns dados de acesso serão criados para ac
 
 #### Iniciando o WEB
 
+Antes disso, é importante criar um arquivo .env (dentro da pasta web, caso esse arquivo não exista) e copiar o conteúdo do arquivo .env.example para dentro dele
+
 Considerando que você já realizou os passos anteriores, agora, para rodar o servidor web acesse a pasta **web**, abra o terminal e execute o comando: **yarn**, aguarde a instalação das dependencias e depois execute o comando: **yarn dev**, acompanhe o terminal e a aplicação irá rodar na porta disponível, e tudo será informado via terminal.
 
 ## Acessando o sistema
